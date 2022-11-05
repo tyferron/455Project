@@ -1,3 +1,4 @@
-CSCI455Chatroom/.idea/*
-CSCI455Chatroom/out/*
-CSCI455Chatroom/CSCI455Chatroom.iml
+CSCI455Chatroom/.idea/**
+CSCI455Chatroom/.idea
+CSCI455Chatroom/out/**
+CSCI455Chatroom/out
