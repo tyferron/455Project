@@ -23,6 +23,11 @@
       <scope>test</scope>
       <version>5.9.1</version>
     </dependency>
+    <dependency>
+      <groupId>net.sf.ucanaccess</groupId>
+      <artifactId>ucanaccess</artifactId>
+      <version>5.0.1</version>
+    </dependency>
   </dependencies>
 
 </project>
