@@ -70,5 +70,25 @@ public class Client {
     public void sendMsg(String msg) {
         
     }
+
+    public String receiveMsg() {
+        return null;
+    }
+
+    public void changeRoom(String room) {
+
+    }
+
+    public String[] getChatRooms(){
+        return null;
+    }
+
+    public boolean login(String username, String password) {
+        return true;
+    }
+
+    public void createChatRoom(String name) {
+        
+    }
     
 }
