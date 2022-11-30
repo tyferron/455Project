@@ -30,14 +30,24 @@ public class ClientConnection extends Thread {
         for(int i = 0; i < string.length(); i++){ res[i]=(byte)string.charAt(i); }
         return res;
     }
+    public byte[] stringArrToBytes(String[] strings){
+        int y = 0;
+        for(String s : strings){ y+=s.length(); }
+        byte[] res = new byte[y];
+        int x=0;
+        for(String s : strings){
+            for(int i = 0; i < s.length(); i++){ res[i+x]=(byte)s.charAt(i); }
+            x+=s.length();
+        }
+        return res;
+    }
 
     private void handleRequest(byte[] request_bytes){
         String[] request=bytesToString(request_bytes).split("\n");
         switch (request[0]) {
             case "GETMESSAGES": //Used for loading, (reloading), and switching chatrooms/DMs
-                //TODO request[1] is roomID
-                //TODO returns to client message history of specified room
-                    //TODO FORMAT:
+                outToClient.write(stringArrToBytes(getMessages(Integer.parseInt(request[1]))));
+                //FORMAT:
                     // MESSAGEGET
                     // roomID
                     // history
@@ -70,6 +80,10 @@ public class ClientConnection extends Thread {
             default:
                 //TODO error?
         }
+    }
+
+    private String[] getMessages(int roomID){
+        return new String[]{"MESSAGESGOT",roomID+"", "TODO"}; //TODO replace todo string with poking the DB 
     }
 
     @Override public void run() {
