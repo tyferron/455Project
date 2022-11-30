@@ -46,15 +46,22 @@ public class ClientConnection extends Thread {
         String[] request=bytesToString(request_bytes).split("\n");
         switch (request[0]) {
             case "GETMESSAGES": //Used for loading, (reloading), and switching chatrooms/DMs
-                outToClient.write(stringArrToBytes(getMessages(Integer.parseInt(request[1]))));
-                //FORMAT:
-                    // MESSAGEGET
+                //FROMCLIENT FORMAT:
+                    // GETMESSAGES
+                    // roomID
+                //TOCLIENT FORMAT:
+                    // MESSAGESGOT
                     // roomID
                     // history
+                outToClient.write(stringArrToBytes(getMessages(Integer.parseInt(request[1]))));
                 break;
             case "SENDMESSAGE":
-                //TODO request[1] is roomID, request[2-N] is message (escape newlines so is only [2]?)
-                //TODO updates message history of specified room with supplied message (note: practice safe data-handling.) return as if GETMESSAGES was called after message history updated
+                //FROMCLIENT FORMAT:
+                    // SENDMESSAGE
+                    // roomID
+                    // message
+                //TOCLIENT: returns a messageGet
+                outToClient.write(stringArrToBytes(sendMessage(Integer.parseInt(request[1]), request[2])));
                 break;
             case "LOGIN":
                 //TODO request[1] is username, request[2] is password (hashed please)
@@ -84,6 +91,11 @@ public class ClientConnection extends Thread {
 
     private String[] getMessages(int roomID){
         return new String[]{"MESSAGESGOT",roomID+"", "TODO"}; //TODO replace todo string with poking the DB 
+    }
+
+    private String[] sendMessage(int roomID, String message){
+        //TODO *roomID* message history updated with *message*. Remember safe data handling!
+        return getMessages(roomID);
     }
 
     @Override public void run() {
