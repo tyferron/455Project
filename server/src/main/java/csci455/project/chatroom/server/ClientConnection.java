@@ -1,49 +1,26 @@
 package csci455.project.chatroom.server;
 import java.io.*;
 import java.net.*;
+import java.util.*;
 
 public class ClientConnection extends Thread {
     Socket clientSocket;
 
-	InputStream inFromClient;
-	OutputStream outToClient;
+    PrintWriter toClientWriter;
+    BufferedReader fromClientReader;
     byte[] request = new byte[1024];
     public ClientConnection(Socket clientSocket){
         this.clientSocket = clientSocket;
         try {
 			clientSocket.setSoTimeout(2000);
-			inFromClient = clientSocket.getInputStream();
-			outToClient = clientSocket.getOutputStream();
+            toClientWriter = new PrintWriter(clientSocket.getOutputStream());
+            fromClientReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
     }
 
-    static String bytesToString(byte[] bytes){
-        StringBuilder s = new StringBuilder();
-        for(byte b : bytes){ s.append((char)b); }
-        return s.toString();
-    }
-
-    static byte[] stringToBytes(String string){
-        byte[] res = new byte[string.length()];
-        for(int i = 0; i < string.length(); i++){ res[i]=(byte)string.charAt(i); }
-        return res;
-    }
-    public byte[] stringArrToBytes(String[] strings){
-        int y = 0;
-        for(String s : strings){ y+=s.length(); }
-        byte[] res = new byte[y];
-        int x=0;
-        for(String s : strings){
-            for(int i = 0; i < s.length(); i++){ res[i+x]=(byte)s.charAt(i); }
-            x+=s.length();
-        }
-        return res;
-    }
-
-    private void handleRequest(byte[] request_bytes){
-        String[] request=bytesToString(request_bytes).split("\n");
+    private void handleRequest(String[] request){
         switch (request[0]) {
             case "GETMESSAGES": //Used for loading, (reloading), and switching chatrooms/DMs
                 //FROMCLIENT FORMAT:
@@ -53,7 +30,10 @@ public class ClientConnection extends Thread {
                     // MESSAGESGOT
                     // roomID
                     // history
-                outToClient.write(stringArrToBytes(getMessages(Integer.parseInt(request[1]))));
+                for(String reqLine : getMessages(Integer.parseInt(request[1]))){
+                    toClientWriter.println(reqLine);
+                }
+                toClientWriter.println("END");
                 break;
             case "SENDMESSAGE":
                 //FROMCLIENT FORMAT:
@@ -61,7 +41,10 @@ public class ClientConnection extends Thread {
                     // roomID
                     // message
                 //TOCLIENT: returns a messageGet
-                outToClient.write(stringArrToBytes(sendMessage(Integer.parseInt(request[1]), request[2])));
+                for(String reqLine : sendMessage(Integer.parseInt(request[1]), request[2])){
+                    toClientWriter.println(reqLine);
+                }
+                toClientWriter.println("END");
                 break;
             case "LOGIN":
                 //TODO request[1] is username, request[2] is password (hashed please)
@@ -100,10 +83,15 @@ public class ClientConnection extends Thread {
 
     @Override public void run() {
 		try {
-			while(inFromClient.read(request) != -1){
-                handleRequest(request);
-                outToClient.write(request);
+            String[] request = new String[1];
+			while(request[request.length-1]!="END"){
+                String[] temp = new String[request.length+1];
+                for(int i = 0; i < request.length; i++){
+                    temp[i]=request[i];
+                }
+                request[request.length-1]=fromClientReader.readLine();
 			}
+            handleRequest(Arrays.copyOf(request, request.length-1));
 		} catch(IOException e){
 			e.printStackTrace();
 		}
