@@ -90,5 +90,13 @@ public class Client {
     public void createChatRoom(String name) {
         
     }
+
+    public void joinChatRoom(String name) {
+
+    }
+
+    public void leaveChatRoom(String name) {
+        
+    }
     
 }
