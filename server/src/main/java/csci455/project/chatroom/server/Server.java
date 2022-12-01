@@ -3,11 +3,12 @@ package csci455.project.chatroom.server;
 import java.io.IOException;
 import java.net.*;
 
-public class App 
+public class Server 
 {
     static int SERVER_PORT = 29000;
     public static void main(String[] args)
     {
+    	boolean close=false;
         //Is an interface needed? or is this just a background process?
         try{
             ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
@@ -20,6 +21,10 @@ public class App
                 } catch(Exception e){
                     System.err.println("Error while establishing a new client connection");
                     e.printStackTrace();
+                }
+                if(close) {
+                	serverSocket.close();
+                	break;
                 }
             }
         } catch(IOException e){
