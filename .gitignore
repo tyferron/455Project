@@ -1,0 +1,9 @@
+**/.vscode
+**/target
+/.metadata/
+/client/.settings
+/server/.settings
+/client/.classpath
+/client/.project
+/server/.classpath
+/server/.project
