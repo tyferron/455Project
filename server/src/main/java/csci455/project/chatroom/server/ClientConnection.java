@@ -12,7 +12,7 @@ public class ClientConnection extends Thread {
     public ClientConnection(Socket clientSocket){
         this.clientSocket = clientSocket;
         try {
-			clientSocket.setSoTimeout(2000);
+//			clientSocket.setSoTimeout(2000);
             toClientWriter = new PrintWriter(clientSocket.getOutputStream());
             fromClientReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		} catch (Exception e) {
@@ -21,6 +21,10 @@ public class ClientConnection extends Thread {
     }
 
     private void handleRequest(String[] request){
+    	toClientWriter.println("Processing request:");
+    	for(String line : request) { toClientWriter.println("\t"+line); }
+    	toClientWriter.println("END");
+    	toClientWriter.flush();
         switch (request[0]) {
             case "GETMESSAGES": //Used for loading, (reloading), and switching chatrooms/DMs
                 //FROMCLIENT FORMAT:
@@ -83,13 +87,14 @@ public class ClientConnection extends Thread {
 
     @Override public void run() {
 		try {
-            String[] request = new String[1];
-			while(request[request.length-1]!="END"){
+            String[] request = new String[0];
+			while(request.length==0 || !request[request.length-1].equals("END")){
                 String[] temp = new String[request.length+1];
                 for(int i = 0; i < request.length; i++){
                     temp[i]=request[i];
                 }
-                request[request.length-1]=fromClientReader.readLine();
+                temp[temp.length-1]=fromClientReader.readLine();
+                request=temp;
 			}
             handleRequest(Arrays.copyOf(request, request.length-1));
 		} catch(IOException e){

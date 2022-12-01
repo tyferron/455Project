@@ -8,63 +8,64 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    Socket clientSocket;
     static BufferedReader in;
     static PrintWriter out;
+    static int roomID = 1234; //ID of current room
+    static int SERVER_PORT = 29000;
     final static Scanner sc = new Scanner(System.in);
-        
-    public Client(){
+    public static void main(String[] args) {
+    	boolean close=false;
         try {
-            clientSocket = new Socket("127.0.0.1", 5000);
+            Socket clientSocket = new Socket("127.0.0.1", SERVER_PORT);
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            try {
+                Thread sender = new Thread(new Runnable() {
+                    public void run() {
+                        while(true){
+                            sendMsg(sc.nextLine());
+                        }
+                    }
+                });
+                sender.start();
+                Thread receiver = new Thread(new Runnable() {
+                    String msg;
+                    public void run(){
+                        try {
+                            msg = in.readLine();
+                            while(msg!=null){
+                                System.out.println("Server :"+msg);
+                                msg = in.readLine();
+                            } 
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                receiver.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(close) {
+            	clientSocket.close();
+            }
         } catch (IOException e){
             e.printStackTrace();
         }
-    }
-    public static void main(String[] args) {
         
-        try {
-            
-
-            Thread sender = new Thread(new Runnable() {
-                String msg;
-
-                
-                public void run() {
-                    while(true){
-                        msg = sc.nextLine();
-                        out.println(msg);
-                        out.flush();
-                    }
-                }
-            });
-            sender.start();
-            Thread receiver = new Thread(new Runnable() {
-                String msg;
-                public void run(){
-                    try {
-                        msg = in.readLine();
-                        while(msg!=null){
-                            System.out.println("Server :"+msg);
-                            msg = in.readLine();
-                        } 
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            receiver.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        
     
 
    }
 
-    public void sendMsg(String msg) {
-        
+    static public void sendMsg(String msg) {
+    	System.out.println("Sending message: "+msg);
+    	out.println("SENDMESSAGE");
+    	out.println(roomID);
+        out.println(msg);
+        out.println("END");
+        out.flush();
     }
 
     public String receiveMsg() {
