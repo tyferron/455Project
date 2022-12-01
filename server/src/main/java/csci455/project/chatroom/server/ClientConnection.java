@@ -21,10 +21,6 @@ public class ClientConnection extends Thread {
     }
 
     private void handleRequest(String[] request){
-    	toClientWriter.println("Processing request:");
-    	for(String line : request) { toClientWriter.println("\t"+line); }
-    	toClientWriter.println("END");
-    	toClientWriter.flush();
         switch (request[0]) {
             case "GETMESSAGES": //Used for loading, (reloading), and switching chatrooms/DMs
                 //FROMCLIENT FORMAT:
@@ -38,6 +34,7 @@ public class ClientConnection extends Thread {
                     toClientWriter.println(reqLine);
                 }
                 toClientWriter.println("END");
+            	toClientWriter.flush();
                 break;
             case "SENDMESSAGE":
                 //FROMCLIENT FORMAT:
@@ -49,6 +46,7 @@ public class ClientConnection extends Thread {
                     toClientWriter.println(reqLine);
                 }
                 toClientWriter.println("END");
+            	toClientWriter.flush();
                 break;
             case "LOGIN":
                 //TODO request[1] is username, request[2] is password (hashed please)
@@ -68,6 +66,11 @@ public class ClientConnection extends Thread {
                 //TODO user-room table is updated on DB
                 //TODO something should be returned. What this is I'm unsure. Default page?
                 break;
+            case "CREATEROOM": //removing a chatroom from their room list
+                //TODO request[1] is roomID
+                //TODO user-room table is updated on DB
+                //TODO something should be returned. What this is I'm unsure. Default page?
+                break;
             case "HEARTBEAT": //Unsure if required
                 //TODO no additional arguments? Heartbeats may alternatively be accomplished through routine calls of GETMESSAGES
                 break;            
@@ -77,28 +80,38 @@ public class ClientConnection extends Thread {
     }
 
     private String[] getMessages(int roomID){
-        return new String[]{"MESSAGESGOT",roomID+"", "TODO"}; //TODO replace todo string with poking the DB 
+    	String messageHistory = Server.rooms.get(roomID);
+    	if(messageHistory==null) {
+    		messageHistory="This chatoom is a stub, you can help by EXPANDING IT.";
+    	}
+        return new String[]{"MESSAGESGOT",roomID+"", messageHistory}; //TODO replace todo string with poking the DB 
     }
 
     private String[] sendMessage(int roomID, String message){
-        //TODO *roomID* message history updated with *message*. Remember safe data handling!
-        return getMessages(roomID);
+    	if(Server.rooms.get(roomID)==null) {
+    		Server.rooms.put(roomID, message);
+    	} else {
+    		Server.rooms.put(roomID, Server.rooms.get(roomID)+"\n"+message);
+    	}
+    	return getMessages(roomID);
     }
 
     @Override public void run() {
-		try {
-            String[] request = new String[0];
-			while(request.length==0 || !request[request.length-1].equals("END")){
-                String[] temp = new String[request.length+1];
-                for(int i = 0; i < request.length; i++){
-                    temp[i]=request[i];
-                }
-                temp[temp.length-1]=fromClientReader.readLine();
-                request=temp;
+    	while(true) {
+	    	try {
+		        String[] request = new String[0];
+				while(request.length==0 || !request[request.length-1].equals("END")){
+	                String[] temp = new String[request.length+1];
+	                for(int i = 0; i < request.length; i++){
+	                    temp[i]=request[i];
+	                }
+	                temp[temp.length-1]=fromClientReader.readLine();
+	                request=temp;
+				}
+		        handleRequest(Arrays.copyOf(request, request.length-1));
+			} catch(IOException e){
+				e.printStackTrace();
 			}
-            handleRequest(Arrays.copyOf(request, request.length-1));
-		} catch(IOException e){
-			e.printStackTrace();
 		}
 	}
 }

@@ -1,11 +1,15 @@
 package csci455.project.chatroom.server;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Server 
 {
     static int SERVER_PORT = 29000;
+    static Map<Integer, String> rooms = new HashMap<>();
     public static void main(String[] args)
     {
     	boolean close=false;
