@@ -9,8 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import csci455.project.chatroom.client.GUI.GUI;
@@ -39,21 +37,7 @@ public class Client {
 //                    }
 //                });
 //                sender.start();
-                Thread receiver = new Thread(new Runnable() {
-                    public void run(){
-                        while(true){
-                        	try {
-                        	    List<String> request= new ArrayList<String>();
-	                            request.add(in.readLine());
-	                            while(!request.get(request.size()-1).equals("END")){ request.add(in.readLine()); } 
-	                            request.remove(request.size()-1);
-	                            handleRequest(request);
-	                        } catch (IOException e) {
-	                            e.printStackTrace();
-	                        }
-                        }
-                    }
-                });
+                Thread receiver = new ReceiverThread();
                 receiver.start();
                 Thread messageGetterThread = new Thread(new Runnable() {
 					
@@ -88,17 +72,7 @@ public class Client {
 
    }
 
-    static private void handleRequest(List<String> request) {
-    	switch(request.get(0)) {
-    	case "MESSAGESGOT":
-    		if(roomID==Integer.parseInt(request.get(1))) {
-    			for(int i = 2; i < request.size(); i++) {
-    				System.out.println(request.get(i));
-    			}
-    		}
-    		break;
-    	}
-    }
+    
     
     static public void sendMsg(String msg) {
 //    	System.out.println("Sending message: "+msg);
