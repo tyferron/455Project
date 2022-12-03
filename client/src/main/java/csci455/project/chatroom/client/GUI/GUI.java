@@ -24,6 +24,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import csci455.project.chatroom.client.Client;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -31,11 +32,11 @@ import net.miginfocom.swing.MigLayout;
  * @author RLiebsch
  */
 @SuppressWarnings("serial")
-public class Main extends JFrame {
+public class GUI extends JFrame {
 
   
-    public Main() {
-        initComponents();
+    public GUI() {
+    	initComponents();
         panel.setLayout(new MigLayout("fillx"));
     }
 
@@ -124,6 +125,7 @@ public class Main extends JFrame {
     private void cmdLeftActionPerformed(ActionEvent evt) {//GEN-FIRST:event_cmdLeftActionPerformed
         String text = txt.getText().trim();
         txt.setText("");
+        Client.sendMsg(text);
         Item_Left item = new Item_Left(text);
         panel.add(item, "wrap, w 80%");
         panel.repaint();
@@ -133,7 +135,7 @@ public class Main extends JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public void run() {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -147,20 +149,20 @@ public class Main extends JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        GUI me=this;
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                me.setVisible(true);
             }
         });
     }

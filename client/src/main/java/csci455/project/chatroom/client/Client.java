@@ -9,7 +9,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import csci455.project.chatroom.client.GUI.GUI;
 
 public class Client {
     static BufferedReader in;
@@ -17,33 +21,36 @@ public class Client {
     static int roomID = 1234; //ID of current room
     static int SERVER_PORT = 29000;
     final static Scanner sc = new Scanner(System.in);
+    static GUI gui;
     public static void main(String[] args) {
+    	gui=new GUI();
+    	gui.run();
     	boolean close=false;
         try {
             Socket clientSocket = new Socket("127.0.0.1", SERVER_PORT); //loop address
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             try {
-                Thread sender = new Thread(new Runnable() {
-                    public void run() {
-                        while(true){
-                            sendMsg(sc.nextLine());
-                        }
-                    }
-                });
-                sender.start();
+//                Thread sender = new Thread(new Runnable() {
+//                    public void run() {
+//                        while(true){
+//                            sendMsg(sc.nextLine());
+//                        }
+//                    }
+//                });
+//                sender.start();
                 Thread receiver = new Thread(new Runnable() {
-                    String msg;
                     public void run(){
-                        try {
-                            msg = in.readLine();
-                            while(msg!=null){
-                                System.out.println("Server :"+msg);
-                                msg = in.readLine();
-                            } 
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        while(true){
+                        	try {
+                        	    List<String> request= new ArrayList<String>();
+	                            request.add(in.readLine());
+	                            while(!request.get(request.size()-1).equals("END")){ request.add(in.readLine()); } 
+	                            request.remove(request.size()-1);
+	                            handleRequest(request);
+	                        } catch (IOException e) {
+	                            e.printStackTrace();
+	                        }
                         }
                     }
                 });
@@ -81,8 +88,20 @@ public class Client {
 
    }
 
+    static private void handleRequest(List<String> request) {
+    	switch(request.get(0)) {
+    	case "MESSAGESGOT":
+    		if(roomID==Integer.parseInt(request.get(1))) {
+    			for(int i = 2; i < request.size(); i++) {
+    				System.out.println(request.get(i));
+    			}
+    		}
+    		break;
+    	}
+    }
+    
     static public void sendMsg(String msg) {
-    	System.out.println("Sending message: "+msg);
+//    	System.out.println("Sending message: "+msg);
     	out.println("SENDMESSAGE");
     	out.println(roomID);
         out.println(msg);
@@ -91,25 +110,10 @@ public class Client {
     }
 
     static public void getMessages() {
-    	String msg = "";
     	out.println("GETMESSAGES");
     	out.println(roomID);
         out.println("END");
         out.flush();
-    	try {
-    		msg = in.readLine();
-    		while((msg.equals("MESSAGESGOT") || msg.equals(""+roomID))){
-    			msg = in.readLine();
-    		}
-    		
-          while(!msg.equals("END")){
-              System.out.println("Server :"+msg);
-              msg = in.readLine();
-          } 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
 
     public void changeRoom(int roomID) {
