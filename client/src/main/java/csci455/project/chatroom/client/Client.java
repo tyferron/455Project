@@ -48,6 +48,24 @@ public class Client {
                     }
                 });
                 receiver.start();
+                Thread messageGetterThread = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						while(true) {
+							try {
+								Thread.sleep(1000);
+								getMessages();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
+					}
+				});
+                messageGetterThread.start();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -69,13 +87,31 @@ public class Client {
         out.flush();
     }
 
-    public String receiveMsg() {
-        return null;
+    static public void getMessages() {
+    	String msg = "";
+    	out.println("GETMESSAGES");
+    	out.println(roomID);
+        out.println("END");
+        out.flush();
+    	try {
+    		msg = in.readLine();
+    		while((msg.equals("MESSAGESGOT") || msg.equals(""+roomID))){
+    			msg = in.readLine();
+    		}
+    		
+          while(!msg.equals("END")){
+              System.out.println("Server :"+msg);
+              msg = in.readLine();
+          } 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public void changeRoom(int roomID) {
-    	this.roomID = roomID;
-    	//TODO get messages from room
+    	Client.roomID = roomID;
+    	getMessages();
     }
 
     public String[] getChatRooms(){

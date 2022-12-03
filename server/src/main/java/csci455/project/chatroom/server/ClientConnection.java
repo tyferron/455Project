@@ -8,6 +8,9 @@ public class ClientConnection extends Thread {
 
     PrintWriter toClientWriter;
     BufferedReader fromClientReader;
+    
+    int userID;
+    
     byte[] request = new byte[1024];
     public ClientConnection(Socket clientSocket){
         this.clientSocket = clientSocket;
@@ -20,11 +23,26 @@ public class ClientConnection extends Thread {
 		}
     }
 
+    @Override public void run() {
+    	while(true) {
+			try {
+	            String[] request = new String[0];
+				while(request.length==0 || !request[request.length-1].equals("END")){
+	                String[] temp = new String[request.length+1];
+	                for(int i = 0; i < request.length; i++){
+	                    temp[i]=request[i];
+	                }
+	                temp[temp.length-1]=fromClientReader.readLine();
+	                request=temp;
+				}
+	            handleRequest(Arrays.copyOf(request, request.length-1));
+			} catch(IOException e){
+				e.printStackTrace();
+			}
+    	}
+	}
+
     private void handleRequest(String[] request){
-    	toClientWriter.println("Processing request:");
-    	for(String line : request) { toClientWriter.println("\t"+line); }
-    	toClientWriter.println("END");
-    	toClientWriter.flush();
         switch (request[0]) {
             case "GETMESSAGES": //Used for loading, (reloading), and switching chatrooms/DMs
                 //FROMCLIENT FORMAT:
@@ -34,10 +52,12 @@ public class ClientConnection extends Thread {
                     // MESSAGESGOT
                     // roomID
                     // history
+            		// END
                 for(String reqLine : getMessages(Integer.parseInt(request[1]))){
                     toClientWriter.println(reqLine);
                 }
                 toClientWriter.println("END");
+            	toClientWriter.flush();
                 break;
             case "SENDMESSAGE":
                 //FROMCLIENT FORMAT:
@@ -49,28 +69,90 @@ public class ClientConnection extends Thread {
                     toClientWriter.println(reqLine);
                 }
                 toClientWriter.println("END");
+            	toClientWriter.flush();
                 break;
             case "LOGIN":
-                //TODO request[1] is username, request[2] is password (hashed please)
-                //TODO returns whether login attempt was successful. Unsure how to properly process
+            	//FROMCLIENT FORMAT:
+            		// LOGIN
+            		// username
+            		// hashed password
+            	//TOCLIENT:
+            		//LOGIN
+            		//userID, -1 if error
+            		//END
+            	toClientWriter.println("LOGIN");
+            	userID=testLogin(request[1], request[2]);
+            	toClientWriter.println(userID);
+            	toClientWriter.println("END");
+            	toClientWriter.flush();
                 break;
             case "CREATEACCOUNT":
-                //TODO request[1] is username, request[2] is password (hashed please)
-                //TODO returns whether account creation was successful. If successful returns as if successful login.
+            	//FROMCLIENT FORMAT:
+            		// LOGIN
+            		// username
+            		// hashed password
+            	//TOCLIENT:
+            		//CREATEACCOUNT
+            		//userID, -1 if error
+            		//END
+            	toClientWriter.println("LOGIN");
+            	userID=createAccount(request[1], request[2]);
+            	toClientWriter.println(userID);
+            	toClientWriter.println("END");
+            	toClientWriter.flush();
                 break;
             case "JOINROOM": //Specifically adding a chatroom to their room list
-                //TODO request[1] is roomID, request[2] is roomPassword if applicable (probably also hashed)
-                //TODO returns whether the room was successfully joined. If successful, returns as if GETMESSAGES was called on room.
-                //TODO additionally, the user-room table is updated on DB
+            	//FROMCLIENT FORMAT:
+            		//JOINROOM
+            		//roomID
+            		//password (or blank)
+            		//END
+            	//TOCLIENT:
+            		//ROOMJOINED
+            		//roomID
+            		//true/false - false if bad password or bad room id
+            		//END
+                toClientWriter.println("ROOMJOINED");
+                toClientWriter.println(request[1]);
+                toClientWriter.println(joinRoom(request[1], request[2]));
+                toClientWriter.println("END");
+            	toClientWriter.flush();
+            	for(String reqLine : getMessages(Integer.parseInt(request[1]))){
+                    toClientWriter.println(reqLine);
+                }
+                toClientWriter.println("END");
+            	toClientWriter.flush();
                 break;
             case "LEAVEROOM": //removing a chatroom from their room list
-                //TODO request[1] is roomID
-                //TODO user-room table is updated on DB
-                //TODO something should be returned. What this is I'm unsure. Default page?
+            	//FROMCLIENT FORMAT:
+            		//LEAVEROOM
+            		//roomID
+            		//END
+            	//TOCLIENT:
+            		//ROOMLEFT
+            		//roomID
+            		//END
+            	leaveRoom(request[1]);
+                toClientWriter.println("ROOMLEFT");
+                toClientWriter.println(request[1]);
+                toClientWriter.println("END");
+            	toClientWriter.flush();
                 break;
-            case "HEARTBEAT": //Unsure if required
-                //TODO no additional arguments? Heartbeats may alternatively be accomplished through routine calls of GETMESSAGES
-                break;            
+            case "LISTROOMS": //listing joined rooms
+            	//FROMCLIENT FORMAT:
+            		//LISTROOMS
+            		//END
+            	//TOCLIENT
+            		//ROOMSLIST
+            		//roomID
+            		//roomName
+            		//repeat previous 2 lines for whole list
+            		//END
+                toClientWriter.println("ROOMSLIST");
+                for(String s : listJoinedRooms()) { toClientWriter.println(s); }
+                toClientWriter.println("END");
+            	toClientWriter.flush();
+                break;
             default:
                 //TODO error?
         }
@@ -84,21 +166,25 @@ public class ClientConnection extends Thread {
         //TODO *roomID* message history updated with *message*. Remember safe data handling!
         return getMessages(roomID);
     }
-
-    @Override public void run() {
-		try {
-            String[] request = new String[0];
-			while(request.length==0 || !request[request.length-1].equals("END")){
-                String[] temp = new String[request.length+1];
-                for(int i = 0; i < request.length; i++){
-                    temp[i]=request[i];
-                }
-                temp[temp.length-1]=fromClientReader.readLine();
-                request=temp;
-			}
-            handleRequest(Arrays.copyOf(request, request.length-1));
-		} catch(IOException e){
-			e.printStackTrace();
-		}
+    
+    private int testLogin(String username, String hashedPass) {
+		return -1; //TODO return userid if valid, -1 if an error was encountered (username DNE or pass doesn't match)
+    }
+	private int createAccount(String username, String hashedPass) {
+		//TODO create the account
+		return -1; //TODO return userID if created, -1 if an error was encountered (likely username already exists)
+	}
+	private boolean joinRoom(String roomID, String hashedPass) {
+		//TODO update user-room table
+		return true; //TODO return true if joined, false if an error was encountered (room DNE or pass doesn't match.) NOTE: any pass accepted for room without pass
+	}
+	private String[] listJoinedRooms() {
+		String[] rooms = new String[] {};
+		//TODO fill rooms with a list of joined rooms
+		//TODO it should be an even number of strings, each an id followed by a room name
+		return rooms;
+	}
+	private void leaveRoom(String roomID) {
+		//TODO update user-room table
 	}
 }
