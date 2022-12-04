@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Scanner;
 
 import csci455.project.chatroom.client.GUI.GUI;
@@ -66,10 +65,6 @@ public class Client {
         } catch (IOException e){
             e.printStackTrace();
         }
-        
-        
-    
-
    }
 
     
@@ -90,17 +85,25 @@ public class Client {
         out.flush();
     }
 
-    public void changeRoom(int roomID) {
+    static public void changeRoom(int roomID) {
     	Client.roomID = roomID;
     	getMessages();
     }
 
-    public String[] getChatRooms(){
-    	//do we want this to display all the rooms
-        return null;
+
+    public static void getChatRooms(){
+
+    	System.out.println("Getting Chatrooms");
+    	out.println("LISTROOMS");
+        out.println("END");
+        out.flush();
+
     }
     
-    public boolean createAccount(String username, String password) {
+
+    
+    public static void createAccount(String username, String password) {
+
     	
     	password = hashString(password);
     	
@@ -112,10 +115,11 @@ public class Client {
         out.flush();
         
         //TODO: return response from server
-        return true;
     }
     
-    public boolean deleteAccount(String username, String password) {
+
+    
+    public static void deleteAccount(String username, String password) {
     	
     	password = hashString(password);
     	
@@ -126,12 +130,11 @@ public class Client {
         out.println("END");
         out.flush();
         
-        //TODO: return response from server
-        return true;
-    	
     }
 
-    public boolean login(String username, String password) {
+
+    public static void login(String username, String password) {
+
     	
     	password = hashString(password);
     	
@@ -142,11 +145,10 @@ public class Client {
         out.println("END");
         out.flush();
         
-        //TODO: return response from server
-        return true;
     }
 
-    public boolean createChatRoom(int roomID, String password) {
+    public static void createChatRoom(int roomID, String password) {
+
     	
     	password = hashString(password);
     	
@@ -157,11 +159,11 @@ public class Client {
         out.println("END");
         out.flush();
         
-        //TODO: return response from server
-        return true;
     }
     
-    public boolean deleteChatRoom(int roomID, String password) {
+
+    public static void deleteChatRoom(int roomID, String password) {
+
 
     	password = hashString(password);
     	
@@ -171,12 +173,10 @@ public class Client {
         out.println(password);
         out.println("END");
         out.flush();
-        
-        //TODO: return response from server
-    	return true;
     }
 
-    public boolean joinChatRoom(int roomID, String password) {
+
+    public static void joinChatRoom(int roomID, String password) {
 
     	password = hashString(password);
     	
@@ -186,21 +186,16 @@ public class Client {
         out.println(password);
         out.println("END");
         out.flush();
-        
-        //TODO: return response from server
-    	return true;
+
     }
 
-    public boolean leaveChatRoom(int roomID) {
+    static public void leaveChatRoom(int roomID) {
     	
     	System.out.println("Leaving Room: "+roomID);
     	out.println("CREATEROOM");
     	out.println(roomID);
         out.println("END");
         out.flush();
-        
-        //TODO: return response from server
-        return true;
     }
     
     private static String hashString(String password) {
@@ -211,9 +206,9 @@ public class Client {
             md = MessageDigest.getInstance("SHA-256");
 
             // Generate the random salt
-            SecureRandom random = new SecureRandom();
+//            SecureRandom random = new SecureRandom();
             byte[] salt = new byte[16];
-            random.nextBytes(salt);
+            //random.nextBytes(salt);
             // Passing the salt to the digest for the computation
             md.update(salt);
             // Generate the salted hash

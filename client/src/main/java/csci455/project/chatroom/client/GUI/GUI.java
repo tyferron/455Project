@@ -11,6 +11,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +39,10 @@ import net.miginfocom.swing.MigLayout;
  */
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
+	
+	private int userID;
+	private int roomID;
+	private String username;
 
   
     NewChat log;
@@ -48,7 +53,76 @@ public class GUI extends JFrame {
         panel.setLayout(new MigLayout("fillx"));
     }
 
-  
+
+    public void setUserID(int id) {
+    	this.userID = id;
+    }
+    
+    public void setRoomID(int id) {
+    	this.roomID = id;
+    }
+    
+    public void setReceivedMessages(int roomID, List<String>msgs ) {
+    	//do what you want with the list of messages here
+    }
+    
+    public void setLogin(int userID) {
+    	if (userID == -1) {
+    		//failed to login
+    	} else {
+    		this.userID = userID;
+    	}
+    }
+    
+    public void setAccountCreate(int userID) {
+    	if (userID == -1) {
+    		//failed to create account
+    	} else {
+    		this.userID = userID;
+    	}
+    }
+    
+    public void setJoinedRoom(boolean result, int roomID) {
+    	if (result) {
+    		//room joined
+    		this.roomID = roomID;
+    	} else {
+    		//failed to join room
+    	}
+    }
+    
+    public void setLeaveRoom(int roomID) {
+    	//leave room
+    }
+    public void setRoomsList(List<String> rooms) {
+    	//Do what you want with the rooms list here
+    }
+    
+    public void callReceiveMessages() {
+    	Client.getMessages();
+    }
+    
+    public void callLogin(String username, String password) {
+    	Client.login(username, password);
+    }
+    
+    public void callCreateAccount(String userName, String password) {
+    	Client.createAccount(userName, password);
+    }
+    
+    public void callJoinRoom(int roomID, String password) {
+    	Client.joinChatRoom(roomID, password);
+    }
+    
+    public void callLeaveRoom(int roomID) {
+    	Client.leaveChatRoom(roomID);
+    }
+    
+    public void callChangeRoom(int roomID) {
+    	Client.changeRoom(roomID);
+    }
+    
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
