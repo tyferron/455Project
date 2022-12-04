@@ -40,8 +40,10 @@ import net.miginfocom.swing.MigLayout;
 public class GUI extends JFrame {
 
   
-    NewChat log = new NewChat();
+    NewChat log;
     public GUI() {
+    	log = new NewChat(this);
+    	log.setVisible(true);
     	initComponents();
         panel.setLayout(new MigLayout("fillx"));
     }

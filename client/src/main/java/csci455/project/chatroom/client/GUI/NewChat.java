@@ -34,9 +34,10 @@ public class NewChat extends JFrame {
     /**
      * Creates new form login
      */
-    Main main= new Main();
-    public NewChat() {
-        initComponents();
+    GUI main;
+    public NewChat(GUI gui) {
+    	this.main = gui;
+    	initComponents();
     }
 
     /**
@@ -214,7 +215,7 @@ public class NewChat extends JFrame {
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewChat().setVisible(true);
+                new NewChat(null).setVisible(true);
             }
         });
     }
