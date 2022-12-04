@@ -5,8 +5,8 @@ import java.sql.SQLException;
 public class Environment {
     public static Connection getConnection() throws ClassNotFoundException, SQLException
     {
-        Class.forName("org.postregql.Driver");
-        return DriverManager.getConnection("jdbc:posgresql://localhost/ChatroomDB", 
+        Class.forName("org.postgresql.Driver");
+        return DriverManager.getConnection("jdbc:postgresql://localhost/ChatroomDB", 
         "postgres", "Ndsu#5973");
     }
 }
