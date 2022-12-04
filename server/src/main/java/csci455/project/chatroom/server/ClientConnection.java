@@ -38,6 +38,8 @@ public class ClientConnection extends Thread {
 	            handleRequest(Arrays.copyOf(request, request.length-1));
 			} catch(IOException e){
 				e.printStackTrace();
+				System.out.println("It is likely that this occurred due to a client being closed and it is not an issue. If you receive a complaint about the client application crashing, review these log files and contact the devs.");
+				return;
 			}
     	}
 	}
