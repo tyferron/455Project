@@ -14,5 +14,5 @@ public class UserCollection implements Map<Integer, User>
     private final String userName;
     private final String password;
 
-    public UserCollection (int )
+    public UserCollection ();
 }
