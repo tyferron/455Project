@@ -81,59 +81,28 @@ public class Client {
         out.flush();
     }
 
-    static public List<String> getMessages() {
+    static public void getMessages() {
     	out.println("GETMESSAGES");
     	out.println(roomID);
         out.println("END");
         out.flush();
-        
-        try {
-        	List<String> response= new ArrayList<String>();
-			response.add(in.readLine());
-			while(!response.get(response.size()-1).equals("END")){ response.add(Client.in.readLine()); } 
-			response.remove(response.size()-1);
-			if (handleResponse(response)) {
-				response.remove(1);
-				response.remove(0);
-		        return response;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        return null;
     }
 
-    public void changeRoom(int roomID) {
+    static public void changeRoom(int roomID) {
     	Client.roomID = roomID;
     	getMessages();
     }
 
-    public List<String> getChatRooms(){
+    static public List<String> getChatRooms(){
     	System.out.println("Getting Chatrooms");
     	out.println("LISTROOMS");
         out.println("END");
         out.flush();
         
-        try {
-        	List<String> response= new ArrayList<String>();
-			response.add(in.readLine());
-			while(!response.get(response.size()-1).equals("END")){ response.add(Client.in.readLine()); } 
-			response.remove(response.size()-1);
-			if (handleResponse(response)) {
-				response.remove(1);
-				response.remove(0);
-		        return response;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
         return null;
     }
     
-    public boolean createAccount(String username, String password) {
+    static public boolean createAccount(String username, String password) {
     	
     	password = hashString(password);
     	
@@ -146,21 +115,11 @@ public class Client {
         
         //TODO: return response from server
         
-        try {
-        	List<String> response= new ArrayList<String>();
-			response.add(in.readLine());
-			while(!response.get(response.size()-1).equals("END")){ response.add(Client.in.readLine()); } 
-	        response.remove(response.size()-1);
-	        return handleResponse(response);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
         
         return false;
     }
     
-    public boolean deleteAccount(String username, String password) {
+    static public boolean deleteAccount(String username, String password) {
     	
     	password = hashString(password);
     	
@@ -176,7 +135,7 @@ public class Client {
     	
     }
 
-    public boolean login(String username, String password) {
+    static public boolean login(String username, String password) {
     	
     	password = hashString(password);
     	
@@ -191,7 +150,7 @@ public class Client {
         return true;
     }
 
-    public boolean createChatRoom(int roomID, String password) {
+    static public boolean createChatRoom(int roomID, String password) {
     	
     	password = hashString(password);
     	
@@ -206,7 +165,7 @@ public class Client {
         return true;
     }
     
-    public boolean deleteChatRoom(int roomID, String password) {
+    static public boolean deleteChatRoom(int roomID, String password) {
 
     	password = hashString(password);
     	
@@ -221,7 +180,7 @@ public class Client {
     	return true;
     }
 
-    public boolean joinChatRoom(int roomID, String password) {
+    static public boolean joinChatRoom(int roomID, String password) {
 
     	password = hashString(password);
     	
@@ -232,52 +191,16 @@ public class Client {
         out.println("END");
         out.flush();
         
-        try {
-        	List<String> response= new ArrayList<String>();
-			response.add(in.readLine());
-			while(!response.get(response.size()-1).equals("END")){ response.add(Client.in.readLine()); } 
-	        response.remove(response.size()-1);
-	        return handleResponse(response);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
         return false;
     }
 
-    public void leaveChatRoom(int roomID) {
+    static public void leaveChatRoom(int roomID) {
     	
     	System.out.println("Leaving Room: "+roomID);
     	out.println("CREATEROOM");
     	out.println(roomID);
         out.println("END");
         out.flush();
-    }
-    
-    private static boolean handleResponse(List<String> response) {
-    	switch(response.get(0)) {
-    	case "CREATEACCOUNT":
-    		if(roomID==Integer.parseInt(response.get(1))) {
-    			return true;
-    		}
-    		return false;
-    	case "ROOMJOINED":
-    		if(roomID==Integer.parseInt(response.get(1))) {
-    			return response.get(3).equals(true);
-    		}
-    		return false;
-    	case "LISTROOMS":
-    		return true;
-    	case "MESSAGESGOT":
-    		return true;
-    	case "LOGIN":
-    		if(roomID==Integer.parseInt(response.get(1))) {
-    			return true;
-    		}
-    	} 
-    	
-    	return false;
     }
     
     private static String hashString(String password) {
