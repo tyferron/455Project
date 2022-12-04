@@ -85,19 +85,25 @@ public class Client {
         out.flush();
     }
 
-    public static void changeRoom(int roomID) {
+    static public void changeRoom(int roomID) {
     	Client.roomID = roomID;
     	getMessages();
     }
 
+
     public static void getChatRooms(){
+
     	System.out.println("Getting Chatrooms");
     	out.println("LISTROOMS");
         out.println("END");
         out.flush();
+
     }
     
+
+    
     public static void createAccount(String username, String password) {
+
     	
     	password = hashString(password);
     	
@@ -110,6 +116,8 @@ public class Client {
         
         //TODO: return response from server
     }
+    
+
     
     public static void deleteAccount(String username, String password) {
     	
@@ -124,7 +132,9 @@ public class Client {
         
     }
 
+
     public static void login(String username, String password) {
+
     	
     	password = hashString(password);
     	
@@ -138,6 +148,7 @@ public class Client {
     }
 
     public static void createChatRoom(int roomID, String password) {
+
     	
     	password = hashString(password);
     	
@@ -150,7 +161,9 @@ public class Client {
         
     }
     
+
     public static void deleteChatRoom(int roomID, String password) {
+
 
     	password = hashString(password);
     	
@@ -162,6 +175,7 @@ public class Client {
         out.flush();
     }
 
+
     public static void joinChatRoom(int roomID, String password) {
 
     	password = hashString(password);
@@ -172,9 +186,10 @@ public class Client {
         out.println(password);
         out.println("END");
         out.flush();
+
     }
 
-    public static void leaveChatRoom(int roomID) {
+    static public void leaveChatRoom(int roomID) {
     	
     	System.out.println("Leaving Room: "+roomID);
     	out.println("CREATEROOM");
