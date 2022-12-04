@@ -1,45 +1,24 @@
 package csci455.project.chatroom.server.models;
+import java.util.Map;
 
-public class User {
+public class User implements Comparable<User>, Map.Entry<Integer, User> 
+{
+    private final int userId;
     private String userName;
     private String password;
-    private boolean joinedRoom;
 
-    public User(String userName, String password, boolean joinedRoom)
+    public User(int userId, String userName, String password)
     {
-
-    }
-
-    public String getUserName()
-    {
-        return userName;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public boolean isJoinedRoom()
-    {
-        return joinedRoom;
-    }
-
-    public void setUserName(String userName)
-    {
+        this.userId = userId;
         this.userName = userName;
-    }
-
-    public void setPassword(String password)
-    {
         this.password = password;
     }
 
-    public void setisJoinedRoom(boolean joinedRoom)
+    public int compareTo(User other)
     {
-        this.joinedRoom = joinedRoom;
+        return userName.compareTo(other.userName);
     }
-
+   
     @Override
     public boolean equals(Object obj)
     {
@@ -48,14 +27,23 @@ public class User {
             return false;
         }
         User other = (User)obj;
-        return joinedRoom == other.joinedRoom && password.equals(other.password) &&
-            userName.equals(other.password);
+        return password.equals(other.password) && userName.equals(other.userName);
+    }
+
+    public Integer getKey() 
+    {
+        return userId;
+    }
+
+    public User getValue() 
+    {
+        return this;
     }
 
     @Override
     public int hashCode()
     {
-        String temp = userName + password + joinedRoom;
+        String temp = userName + password;
         int sum = 0;
         for (char c : temp.toCharArray())
         {
@@ -64,9 +52,17 @@ public class User {
         return sum;
     }
 
+    public User setValue(User value) 
+    {
+        User previous = getValue();
+        this.userName = value.userName;
+        this.password = value.password;
+        return previous;
+    }
+
     @Override
     public String toString()
     {
-        return "User Name: " + userName + ", Password: " + password + ", Joined Room: " + joinedRoom;
+        return "User Name: " + userName + ", Password: " + password;
     }
 }

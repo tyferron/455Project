@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 
-public class UserCollection //implements List<User> 
+public class UserCollection implements Map<Integer, User>
 {
-    // private Map<Integer, User> usersTable;
-    // private int userId;
-    // private static final 
+    private static int userId;
+    private final int portNumber;
+    private final String databaseName;
+    private final String userName;
+    private final String password;
 
-    // public UserCollection()
-    // {
-
-    // }
+    public UserCollection (int )
 }

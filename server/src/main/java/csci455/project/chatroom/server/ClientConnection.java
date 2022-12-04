@@ -44,7 +44,7 @@ public class ClientConnection extends Thread {
     	}
 	}
 
-    private void handleRequest(String[] request){
+    /*private void handleRequest(String[] request){
         switch (request[0]) {
             case "GETMESSAGES": //Used for loading, (reloading), and switching chatrooms/DMs
                 //FROMCLIENT FORMAT:
@@ -158,7 +158,7 @@ public class ClientConnection extends Thread {
             default:
                 //TODO error?
         }
-    }
+    } */
 
     private String[] getMessages(int roomID){
         return new String[]{"MESSAGESGOT",roomID+"", "TODO"}; //TODO replace todo string with poking the DB 

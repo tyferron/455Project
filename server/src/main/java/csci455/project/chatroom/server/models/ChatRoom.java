@@ -1,34 +1,24 @@
 package csci455.project.chatroom.server.models;
+import java.util.Map;
 
-public class ChatRoom 
+public class ChatRoom implements Comparable<ChatRoom>, Map.Entry<Integer, ChatRoom>
 {
+    private final int roomId;
+    private String roomName;
     private String password;
     private String messageHistory;
 
-    public ChatRoom(String password, String messageHistory)
+    public ChatRoom(int roomId, String roomName, String password, String messageHistory)
     {
-        setPassword(password);
-        this.messageHistory = messageHistory;
-    }
-
-    public String getPassowrd()
-    {
-        return password;
-    }
-
-    public String getMessageHistory()
-    {
-        return messageHistory;
-    }
-
-    public void setPassword(String password)
-    {
+        this.roomId = roomId;
+        this.roomName = roomName;
         this.password = password;
+        this.messageHistory = messageHistory;
     }
 
-    public void setMessageHistory(String messageHistory)
+    public int compareTo(ChatRoom other)
     {
-        this.messageHistory = messageHistory;
+        return roomName.compareTo(other.roomName);
     }
 
     @Override
@@ -39,22 +29,38 @@ public class ChatRoom
             return false;
         }
         ChatRoom other = (ChatRoom) obj;
-        return password.equals(other.password) && messageHistory.equals(other.messageHistory);
+        return roomName.equals(other.roomName) && password.equals(other.password) && 
+            messageHistory.equals(other.messageHistory);
+    }
+
+    public Integer getKey()
+    {
+        return roomId;
+    }
+
+    public ChatRoom getValue()
+    {
+        return this;
     }
     
     @Override
     public int hashCode()
     {
+        String temp = roomId + roomName + password + messageHistory;
         int sum = 0;
-        for (char c : password.toCharArray())
-        {
-            sum += c;
-        }
-        for (char c : messageHistory.toCharArray())
+        for (char c : temp.toCharArray())
         {
             sum += c;
         }
         return sum;
+    }
+
+    public ChatRoom setValue(ChatRoom value)
+    {
+        ChatRoom previous = getValue();
+        this.password = value.password;
+        this.messageHistory = value.messageHistory;
+        return previous;
     }
 
     @Override
