@@ -8,9 +8,6 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import csci455.project.chatroom.client.GUI.GUI;
@@ -93,16 +90,20 @@ public class Client {
     	getMessages();
     }
 
-    static public List<String> getChatRooms(){
+
+    public static void getChatRooms(){
+
     	System.out.println("Getting Chatrooms");
     	out.println("LISTROOMS");
         out.println("END");
         out.flush();
-        
-        return null;
+
     }
     
-    static public boolean createAccount(String username, String password) {
+
+    
+    public static void createAccount(String username, String password) {
+
     	
     	password = hashString(password);
     	
@@ -114,12 +115,11 @@ public class Client {
         out.flush();
         
         //TODO: return response from server
-        
-        
-        return false;
     }
     
-    static public boolean deleteAccount(String username, String password) {
+
+    
+    public static void deleteAccount(String username, String password) {
     	
     	password = hashString(password);
     	
@@ -130,12 +130,11 @@ public class Client {
         out.println("END");
         out.flush();
         
-        //TODO: return response from server
-        return true;
-    	
     }
 
-    static public boolean login(String username, String password) {
+
+    public static void login(String username, String password) {
+
     	
     	password = hashString(password);
     	
@@ -146,11 +145,10 @@ public class Client {
         out.println("END");
         out.flush();
         
-        //TODO: return response from server
-        return true;
     }
 
-    static public boolean createChatRoom(int roomID, String password) {
+    public static void createChatRoom(int roomID, String password) {
+
     	
     	password = hashString(password);
     	
@@ -161,11 +159,11 @@ public class Client {
         out.println("END");
         out.flush();
         
-        //TODO: return response from server
-        return true;
     }
     
-    static public boolean deleteChatRoom(int roomID, String password) {
+
+    public static void deleteChatRoom(int roomID, String password) {
+
 
     	password = hashString(password);
     	
@@ -175,12 +173,10 @@ public class Client {
         out.println(password);
         out.println("END");
         out.flush();
-        
-        //TODO: return response from server
-    	return true;
     }
 
-    static public boolean joinChatRoom(int roomID, String password) {
+
+    public static void joinChatRoom(int roomID, String password) {
 
     	password = hashString(password);
     	
@@ -190,8 +186,7 @@ public class Client {
         out.println(password);
         out.println("END");
         out.flush();
-        
-        return false;
+
     }
 
     static public void leaveChatRoom(int roomID) {
@@ -211,7 +206,7 @@ public class Client {
             md = MessageDigest.getInstance("SHA-256");
 
             // Generate the random salt
-            SecureRandom random = new SecureRandom();
+//            SecureRandom random = new SecureRandom();
             byte[] salt = new byte[16];
             //random.nextBytes(salt);
             // Passing the salt to the digest for the computation
