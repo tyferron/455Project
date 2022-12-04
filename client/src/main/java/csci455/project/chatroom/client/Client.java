@@ -81,11 +81,27 @@ public class Client {
         out.flush();
     }
 
-    static public void getMessages() {
+    static public List<String> getMessages() {
     	out.println("GETMESSAGES");
     	out.println(roomID);
         out.println("END");
         out.flush();
+        
+        try {
+        	List<String> response= new ArrayList<String>();
+			response.add(in.readLine());
+			while(!response.get(response.size()-1).equals("END")){ response.add(Client.in.readLine()); } 
+			response.remove(response.size()-1);
+			if (handleResponse(response)) {
+				response.remove(1);
+				response.remove(0);
+		        return response;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return null;
     }
 
     public void changeRoom(int roomID) {
@@ -103,10 +119,12 @@ public class Client {
         	List<String> response= new ArrayList<String>();
 			response.add(in.readLine());
 			while(!response.get(response.size()-1).equals("END")){ response.add(Client.in.readLine()); } 
-			response.remove(0);
-			response.remove(1);
-	        response.remove(response.size()-1);
-	        return response;
+			response.remove(response.size()-1);
+			if (handleResponse(response)) {
+				response.remove(1);
+				response.remove(0);
+		        return response;
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -249,7 +267,16 @@ public class Client {
     			return response.get(3).equals(true);
     		}
     		return false;
+    	case "LISTROOMS":
+    		return true;
+    	case "MESSAGESGOT":
+    		return true;
+    	case "LOGIN":
+    		if(roomID==Integer.parseInt(response.get(1))) {
+    			return true;
+    		}
     	} 
+    	
     	return false;
     }
     
