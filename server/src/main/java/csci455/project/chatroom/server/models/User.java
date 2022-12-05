@@ -35,6 +35,16 @@ public class User implements Comparable<User>, Map.Entry<Integer, User>
         return userId;
     }
 
+    public String getUserName()
+    {
+        return userName;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
     public User getValue() 
     {
         return this;
