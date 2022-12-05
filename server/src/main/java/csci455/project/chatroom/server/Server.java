@@ -6,18 +6,22 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import csci455.project.chatroom.server.models.DatabaseCredential;
+
 public class Server 
 {
     static int SERVER_PORT = 29000;
     static Connection conn;
+    private static DatabaseCredential credential;
     public static void main(String[] args)
     {
     	boolean close=false;
     	try
         {
-            conn = Environment.getConnection();
-            System.out.println("Connection Sucessfull.");
-            conn.close();
+    		credential = new DatabaseCredential(7359, "ChatroomDB", 
+    		        "postgres", "Ndsu#5973");
+    		Connection connection = Mapper.getConnection(credential);
+            System.out.println("DB Connection Sucessfull.");
         }
         catch (Exception ex)
         {
@@ -49,6 +53,11 @@ public class Server
                 }
                 if(close) {
                 	serverSocket.close();
+                	try {
+                		conn.close();
+                	} catch (SQLException e) {
+                		e.printStackTrace();
+                	}
                 	break;
                 }
             }
