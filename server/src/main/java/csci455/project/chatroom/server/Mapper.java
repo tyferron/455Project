@@ -20,6 +20,7 @@ public class Mapper {
         catch (Exception ex)
         {
             System.out.println("Unable to connect to the database");
+            ex.printStackTrace();
             return null;
         }
     }
