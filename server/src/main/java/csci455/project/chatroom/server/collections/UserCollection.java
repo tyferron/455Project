@@ -27,17 +27,20 @@ public class UserCollection implements Map<Integer, User>
     public void clear()
     {
         Connection connection = Mapper.getConnection(credential);
-        String sql = "DELETE FROM public.\"Users\"";
+        String sql = "DELETE FROM public.\"Users\";";
         try
         {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.execute();
             count = 0;
+            statement.close();
+            connection.close();
         }
         catch (SQLException ex)
         {
             System.out.print("Unable to clear the records.");
         }
+        
     }
 
     public boolean containsKey(Object key)
@@ -55,6 +58,8 @@ public class UserCollection implements Map<Integer, User>
             {
                 if (id.intValue() == table.getInt(1))
                 {
+                    table.close();
+                    connection.close();
                     return true;
                 }
             }
@@ -81,13 +86,15 @@ public class UserCollection implements Map<Integer, User>
                         table.getString(2), table.getString(3));
                     if (currentUser.equals(user))
                     {
+                        table.close();
+                        connection.close();
                         return true;
                     }
                 }
             }
             catch (SQLException ex)
             {
-
+                System.out.println("Unable to determine if the table contains the value.");
             }
         }
         return false;
@@ -107,6 +114,8 @@ public class UserCollection implements Map<Integer, User>
                      table.getString(3));
                 entries.add(current);
             }
+            table.close();
+            connection.close();
         }
         catch (SQLException ex)
         {
@@ -130,6 +139,8 @@ public class UserCollection implements Map<Integer, User>
                      table.getString(3));
                     if (current.getKey().equals(k))
                     {
+                        table.close();
+                        connection.close();
                         return current;
                     }
                 }
@@ -158,6 +169,8 @@ public class UserCollection implements Map<Integer, User>
             {
                 keys.add(table.getInt(1));
             }
+            table.close();
+            connection.close();
         }
         catch (SQLException ex)
         {
@@ -174,15 +187,17 @@ public class UserCollection implements Map<Integer, User>
             String sql = previous == null ?
             "INSERT INTO public.\"Users\" (\"UserName\", \"Password\") VALUES " +
             "('" + value.getUserName() + "', '" + value.getPassword() + "');" :
-            "UPDATE public.\"Users\" SET \"UserName\" = " + value.getUserName() + ", \"Password\" = " +
-            value.getPassword() + " WHERE \"UserID\" = " + value.getKey() + ";";
+            "UPDATE public.\"Users\" SET \"UserName\" = '" + value.getUserName() + "', \"Password\" = '" +
+            value.getPassword() + "' WHERE \"UserID\" = " + value.getKey() + ";";
             Connection connection = Mapper.getConnection(credential);
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.execute();
+            statement.executeQuery();
             if (previous == null)
             {
                 count++;
             }
+            statement.close();
+            connection.close();
         }
         catch (SQLException ex)
         {
@@ -208,6 +223,8 @@ public class UserCollection implements Map<Integer, User>
         {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.execute();
+            statement.close();
+            connection.close();
         }
         catch (SQLException ex)
         {
