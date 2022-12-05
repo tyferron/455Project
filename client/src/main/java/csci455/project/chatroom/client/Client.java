@@ -162,15 +162,11 @@ public class Client {
     }
     
 
-    public static void deleteChatRoom(int roomID, String password) {
-
-
-    	password = hashString(password);
+    public static void deleteChatRoom(int roomID) {
     	
     	System.out.println("Deleting room: "+roomID);
     	out.println("DELETEROOM");
     	out.println(roomID);
-        out.println(password);
         out.println("END");
         out.flush();
     }
@@ -178,7 +174,7 @@ public class Client {
 
     public static void joinChatRoom(int roomID, String password) {
 
-    	password = hashString(password);
+    	password = hashString(password==null?"":password);
     	
     	System.out.println("Joining Room: "+roomID);
     	out.println("JOINROOM");
@@ -192,7 +188,7 @@ public class Client {
     static public void leaveChatRoom(int roomID) {
     	
     	System.out.println("Leaving Room: "+roomID);
-    	out.println("CREATEROOM");
+    	out.println("LEAVEROOM");
     	out.println(roomID);
         out.println("END");
         out.flush();

@@ -90,16 +90,28 @@ public class ClientConnection extends Thread {
                 break;
             case "CREATEACCOUNT":
             	//FROMCLIENT FORMAT:
-            		// LOGIN
+            		// CREATEACCOUNT
             		// username
             		// hashed password
             	//TOCLIENT:
             		//CREATEACCOUNT
             		//userID, -1 if error
             		//END
-            	toClientWriter.println("LOGIN");
+            	toClientWriter.println("CREATEACCOUNT");
             	userID=createAccount(request[1], request[2]);
             	toClientWriter.println(userID);
+            	toClientWriter.println("END");
+            	toClientWriter.flush();
+                break;
+            case "DELETEACCOUNT":
+            	//FROMCLIENT FORMAT:
+            		// DELETEACCOUNT
+            		// username
+            		// hashed password
+            	//TOCLIENT:
+            		//DELETEACCOUNT
+            		//END
+            	toClientWriter.println("DELETEACCOUNT");
             	toClientWriter.println("END");
             	toClientWriter.flush();
                 break;
@@ -125,6 +137,25 @@ public class ClientConnection extends Thread {
                 toClientWriter.println("END");
             	toClientWriter.flush();
                 break;
+            case "CREATEROOM": //Specifically adding a chatroom to their room list
+            	//FROMCLIENT FORMAT:
+            		//CREATEROOM
+            		//roomName
+            		//password (or blank)
+            		//END
+            	//TOCLIENT:
+            		//RoomJoined return
+                toClientWriter.println("ROOMJOINED");
+                toClientWriter.println(request[1]);
+                toClientWriter.println(joinRoom(request[1], request[2]));
+                toClientWriter.println("END");
+            	toClientWriter.flush();
+            	for(String reqLine : getMessages(Integer.parseInt(request[1]))){
+                    toClientWriter.println(reqLine);
+                }
+                toClientWriter.println("END");
+            	toClientWriter.flush();
+                break;
             case "LEAVEROOM": //removing a chatroom from their room list
             	//FROMCLIENT FORMAT:
             		//LEAVEROOM
@@ -132,6 +163,21 @@ public class ClientConnection extends Thread {
             		//END
             	//TOCLIENT:
             		//ROOMLEFT
+            		//roomID
+            		//END
+            	leaveRoom(request[1]);
+                toClientWriter.println("ROOMLEFT");
+                toClientWriter.println(request[1]);
+                toClientWriter.println("END");
+            	toClientWriter.flush();
+                break;
+            case "DELETEROOM": //removing a chatroom from their room list
+            	//FROMCLIENT FORMAT:
+            		//LEAVEROOM
+            		//roomID
+            		//END
+            	//TOCLIENT:
+            		//ROOMDELETED
             		//roomID
             		//END
             	leaveRoom(request[1]);
