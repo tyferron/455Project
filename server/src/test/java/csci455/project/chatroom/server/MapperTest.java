@@ -18,13 +18,8 @@ public class MapperTest
     }
 
     @Test
-    public void testGetNextId()
+    public void testConnection()
     {
-        int expected = 3;
-        Connection connection = Mapper.getConnection(credential);
-        Assertions.assertNotNull(connection);
-        String tableName = "Users";
-        int actual = Mapper.getNextId(connection, tableName);
-        Assertions.assertEquals(expected, actual);
+        Assertions.assertNotNull(Mapper.getConnection(credential));
     }
 }

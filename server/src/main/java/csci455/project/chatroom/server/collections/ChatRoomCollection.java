@@ -23,7 +23,7 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
 
     public void clear() 
     {
-        String sql = "DELETE FROM public.\"Users\";";
+        String sql = "DELETE FROM public.\"ChatRoom\";";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.executeQuery();

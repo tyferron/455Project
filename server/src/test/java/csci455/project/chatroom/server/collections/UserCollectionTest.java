@@ -1,7 +1,6 @@
 package csci455.project.chatroom.server.collections;
 import csci455.project.chatroom.server.models.DatabaseCredential;
 import csci455.project.chatroom.server.models.User;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;

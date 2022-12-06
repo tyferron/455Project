@@ -1,5 +1,8 @@
 package csci455.project.chatroom.server.models;
 import java.util.Map;
+import java.util.Random;
+
+import csci455.project.chatroom.server.Mapper;
 
 public class ChatRoom implements Comparable<ChatRoom>, Map.Entry<Integer, ChatRoom>
 {
@@ -31,6 +34,16 @@ public class ChatRoom implements Comparable<ChatRoom>, Map.Entry<Integer, ChatRo
         ChatRoom other = (ChatRoom) obj;
         return roomName.equals(other.roomName) && password.equals(other.password) && 
             messageHistory.equals(other.messageHistory);
+    }
+
+    public static ChatRoom generate()
+    {
+        Random random = new Random();
+        int roomId = random.nextInt(Integer.MAX_VALUE) + 1;
+        String roomName = Mapper.generateString(random, 20);
+        String password = Mapper.generateString(random, 20);
+        String messageHistory = Mapper.generateString(random, 40);
+        return new ChatRoom(roomId, roomName, password, messageHistory);
     }
 
     public Integer getKey()
