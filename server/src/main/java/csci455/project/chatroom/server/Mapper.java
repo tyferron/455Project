@@ -24,25 +24,14 @@ public class Mapper {
         }
     }
 
-    public static int getNextId(Connection connection, String tableName) {
-        try 
-        {
-            int id = 0;
-            String sql = "SELECT * FROM public.\"" + tableName + "\"";
+    public static ResultSet resultOf(Connection connection, String sql)
+    {
+        try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            ResultSet table = statement.executeQuery();
-            while (table.next())
-            {
-                id = table.getInt(1);
-            }
-            table.close();
-            statement.close();
-            connection.close();
-            return id + 1;
-        } 
-        catch (SQLException ex) 
-        {
-            return 0;
+            return statement.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println("Unable to load the Users Table.");
+            return null;
         }
     }
 }

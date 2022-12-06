@@ -38,6 +38,21 @@ public class ChatRoom implements Comparable<ChatRoom>, Map.Entry<Integer, ChatRo
         return roomId;
     }
 
+    public String getMessageHistory()
+    {
+        return messageHistory;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public String getRoomName()
+    {
+        return roomName;
+    }
+
     public ChatRoom getValue()
     {
         return this;
