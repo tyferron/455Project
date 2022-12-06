@@ -11,6 +11,7 @@ public class Login extends JFrame implements ActionListener{
 	   JTextField userName_text;
 	   JPasswordField password_text;
 	   JButton submit, cancel, create;
+	   private String username = "";
 	   public Login() {
 	      // Username Label
 	      user_label = new JLabel();
@@ -41,6 +42,10 @@ public class Login extends JFrame implements ActionListener{
 	      setSize(450,350);
 	      setVisible(true);
 	   }
+	   
+	   public String getUsername() {
+		   return username;
+	   }
 	   public static void main(String[] args) {
 		      new Login();
 	   }
@@ -57,8 +62,10 @@ public class Login extends JFrame implements ActionListener{
 		   else if (ae.getSource() == submit) {
 			   //Client.login(userName, password);
 			   if(userName.equals("Nick") && password.equals("password")) {
-				   GUI gui=new GUI();
-				   gui.run();
+				   username = userName;
+				   JComponent comp = (JComponent) ae.getSource();
+					Window win = SwingUtilities.getWindowAncestor(comp);
+					win.dispose();
 			   }
 		   }
 	   }

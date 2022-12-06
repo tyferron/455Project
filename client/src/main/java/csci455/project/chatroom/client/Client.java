@@ -25,9 +25,11 @@ public class Client {
     	username = args[0];
 
     	Login login = new Login();
-    	
-    	//gui=new GUI();
-    	//gui.run();
+    	username = login.getUsername();
+    	while(username.equals(""))
+    		username = login.getUsername();
+    	gui=new GUI();
+    	gui.run();
     	boolean close=false;
         try {
             Socket clientSocket = new Socket(args[0], SERVER_PORT); //loop address
