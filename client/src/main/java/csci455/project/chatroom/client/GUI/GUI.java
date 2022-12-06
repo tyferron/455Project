@@ -11,6 +11,30 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.LayoutStyle;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,8 +70,11 @@ public class GUI extends JFrame {
 
   
     NewChat log;
+    Login create;
     public GUI() {
-    	log = new NewChat(this);
+    	create = new Login();
+        create.setVisible(true);
+        log = new NewChat(this);
     	log.setVisible(true);
     	initComponents();
         panel.setLayout(new MigLayout("fillx"));
@@ -141,7 +168,6 @@ public class GUI extends JFrame {
         jPanel3 = new JPanel();
         jLabel2 = new JLabel();
         jLabel3 = new JLabel();
-        jButton2 = new JButton();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new Dimension(500, 721));
@@ -276,8 +302,6 @@ public class GUI extends JFrame {
         jLabel3.setText("Welcome the the Chat Project");
         jLabel3.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
-        jButton2.setText("Log in");
-
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -297,23 +321,17 @@ public class GUI extends JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 959, GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(222, Short.MAX_VALUE))
-            .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, 159, GroupLayout.PREFERRED_SIZE)
-                .addGap(120, 120, 120))
+                .addContainerGap(51, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(33, 33, 33)
                     .addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 443, GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(1116, Short.MAX_VALUE)))
+                    .addContainerGap(945, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addContainerGap(113, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -343,8 +361,8 @@ public class GUI extends JFrame {
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 1592, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1395, Short.MAX_VALUE))
+                .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 1421, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -410,7 +428,6 @@ public class GUI extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JButton cmdLeft;
     private JButton jButton1;
-    private JButton jButton2;
     private JLabel jLabel1;
     private JLabel jLabel2;
     private JLabel jLabel3;
