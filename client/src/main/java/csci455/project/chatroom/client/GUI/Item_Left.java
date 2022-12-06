@@ -11,9 +11,12 @@ import javax.swing.JLayeredPane;
 @SuppressWarnings("serial")
 public class Item_Left extends JLayeredPane {
 
-    public Item_Left(String text) {
+    public Item_Left(String user, String text) {
         initComponents();
         txt.setText(text);
+        float hue = 0.0F;
+        for(char c : user.toCharArray()) { hue+=c; }
+        txt.setBgColor(new Color(Color.HSBtoRGB((hue%75)/75.0F, 0.8F, 1F)));
     }
 
     /**
@@ -49,13 +52,13 @@ public class Item_Left extends JLayeredPane {
                 .addComponent(txt, GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(txt, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel1, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txt, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGap(0, 0, 0))
+            );
     }// </editor-fold>//GEN-END:initComponents
 
 
