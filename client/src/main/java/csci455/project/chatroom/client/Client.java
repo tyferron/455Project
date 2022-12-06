@@ -19,7 +19,7 @@ public class Client {
     static int SERVER_PORT = 29000;
     final static Scanner sc = new Scanner(System.in);
     static GUI gui;
-    public static String username="Eli";
+    public static String username="Bodacious T";
     public static void main(String[] args) {
     	gui=new GUI();
     	gui.run();
@@ -148,14 +148,13 @@ public class Client {
         
     }
 
-    public static void createChatRoom(int roomID, String password) {
-
+    public static void createChatRoom(String roomName, String password) {
     	
     	password = hashString(password);
     	
-    	System.out.println("Creating room: "+roomID);
+    	System.out.println("Creating room: "+roomName);
     	out.println("CREATEROOM");
-    	out.println(roomID);
+    	out.println(roomName);
         out.println(password);
         out.println("END");
         out.flush();

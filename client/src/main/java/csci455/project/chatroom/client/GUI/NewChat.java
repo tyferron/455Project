@@ -225,7 +225,14 @@ public class NewChat extends JFrame {
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton3ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
+    	//System.err.println("Hello: "+ jTextField3.getText());
+    	String password = "";
+    	try {
+			password = jTextField2.getText();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    	main.callCreateRoom(jTextField3.getText(), password);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

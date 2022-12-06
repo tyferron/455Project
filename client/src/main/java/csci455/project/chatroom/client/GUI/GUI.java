@@ -118,6 +118,24 @@ public class GUI extends JFrame {
     }
     public void setRoomsList(List<String> rooms) {
     	//Do what you want with the rooms list here
+    	int i = 0;
+    	i = jLabel4.getComponentCount();
+    	while(i < rooms.size()) {
+    		String message = rooms.get(i++)+" "+rooms.get(i);
+    		System.out.println(message);
+    		int split = message.indexOf(':');
+    		String roomID = message.substring(0, split);
+    		String roomName = message.substring(split+1);
+//    		if(user.equals(Client.username)) {
+//        		logOwnMessage(msg);
+//    		} else {
+//        		logOtherMessage(user, msg);    			
+//    		}
+    		logChannel(roomID, roomName);
+    		i++;
+    	}
+    	jLabel4.repaint();
+        jLabel4.revalidate();
     }
     
     public void callReceiveMessages() {
@@ -134,6 +152,10 @@ public class GUI extends JFrame {
     
     public void callJoinRoom(int roomID, String password) {
     	Client.joinChatRoom(roomID, password);
+    }
+    
+    public void callCreateRoom(String roomName, String password) {
+    	Client.createChatRoom(roomName, password);
     }
     
     public void callLeaveRoom(int roomID) {
@@ -381,8 +403,15 @@ public class GUI extends JFrame {
         panel.add(item, "wrap, w 80%");
     }
     
+    
+    
     private void logOtherMessage(String user, String message) {
     	Item_Right item = new Item_Right(user, message);
+        panel.add(item, "wrap, w 80%");
+    }
+    
+    private void logChannel (String roomID, String roomName) {
+    	Item_Right item = new Item_Right(""+roomID, roomName);
         panel.add(item, "wrap, w 80%");
     }
 

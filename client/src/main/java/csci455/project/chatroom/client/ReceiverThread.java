@@ -52,13 +52,10 @@ public class ReceiverThread extends Thread {
 //    		}
     		break;
     	case "ROOMJOINED":
-    		Client.gui.setJoinedRoom(response.get(2).equals("true"), Integer.parseInt(response.get(1)));
-//    		if(response.get(3).equals(true)) {
-//    			System.out.println("Room joined");
-//    		} else {
-//    			System.out.println("Error occured when joining room");
+    		//returns only the name right now. Needs the number
+//    		Client.gui.setJoinedRoom(response.get(2).equals("true"), Integer.parseInt(response.get(1)));
+    		Client.gui.setJoinedRoom(response.get(2).equals("true"), 555);
 //    		
-//    		}
     		break;
     	case "ROOMLEFT":
     		Client.gui.setLeaveRoom(Integer.parseInt(response.get(1)));
