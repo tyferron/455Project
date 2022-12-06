@@ -44,13 +44,10 @@ public class GUI extends JFrame {
 	private int userID;
 
   
-    NewChat log;
-    Login create;
+//    NewChat log;
     public GUI() {
-    	create = new Login();
-        create.setVisible(true);
-        log = new NewChat(this);
-    	log.setVisible(true);
+//        log = new NewChat(this);
+//    	log.setVisible(true);
     	initComponents();
         panel.setLayout(new MigLayout("fillx"));
     }
@@ -393,7 +390,7 @@ public class GUI extends JFrame {
     }
 
     private void jButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        log.setVisible(true); // Main Form to show after the Login Form..
+//        log.setVisible(true); // Main Form to show after the Login Form..
     
     }//GEN-LAST:event_jButton1ActionPerformed
 

@@ -8,7 +8,11 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import javax.swing.JFrame;
 
 import csci455.project.chatroom.client.GUI.GUI;
 import csci455.project.chatroom.client.GUI.Login;
@@ -21,9 +25,11 @@ public class Client {
     final static Scanner sc = new Scanner(System.in);
     static GUI gui;
     public static String username="Nick";
+    public static List<JFrame> loginWindows = new ArrayList<>();
     public static void main(String[] args) {
 
     	Login login = new Login();
+    	loginWindows.add(login);
     	username = login.getUsername();
 //    	gui=new GUI();
 //    	gui.run();
@@ -51,6 +57,7 @@ public class Client {
             		System.out.println(username);
             		continue;
             	}
+            	for(JFrame j : loginWindows) { j.dispose(); }
             	System.out.println("Past");
             	gui=new GUI();
             	gui.run();

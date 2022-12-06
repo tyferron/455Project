@@ -3,15 +3,18 @@ package csci455.project.chatroom.client.GUI;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import csci455.project.chatroom.client.Client;
 @SuppressWarnings("serial")
@@ -56,15 +59,13 @@ public class Login extends JFrame implements ActionListener{
 	   public String getUsername() {
 		   return username;
 	   }
-	   public static void main(String[] args) {
-		      new Login();
-	   }
 	   @Override
 	   public void actionPerformed(ActionEvent ae) {
 		   if(ae.getSource() == create) {
 			   Create create = new Create();
 			   create.setVisible(true);
-			   
+
+			   Client.loginWindows.add(create);
 		   }
 		   else if (ae.getSource() == submit) {
 			   String userName = userName_text.getText();

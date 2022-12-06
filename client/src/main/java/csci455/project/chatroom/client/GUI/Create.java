@@ -43,9 +43,6 @@ public class Create extends JFrame implements ActionListener{
 	    setVisible(true);
 	}
 	
-	public static void main(String[] args) {
-	    new Login();
-	}
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		String userName = userName_text.getText();
@@ -54,9 +51,6 @@ public class Create extends JFrame implements ActionListener{
 		if(password==null||password.trim().equals("")) {return;}
 		if(ae.getSource() == create && confpassword.equals(password)) {
 			Client.createAccount(userName, password);
-			JComponent comp = (JComponent) ae.getSource();
-			Window win = SwingUtilities.getWindowAncestor(comp);
-			win.dispose();
 		}
 
 	}
