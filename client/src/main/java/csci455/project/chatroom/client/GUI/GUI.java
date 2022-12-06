@@ -41,8 +41,6 @@ import net.miginfocom.swing.MigLayout;
 public class GUI extends JFrame {
 	
 	private int userID;
-	private int roomID=1234;
-	private String username="user1";
 
   
     NewChat log;
@@ -62,12 +60,12 @@ public class GUI extends JFrame {
     }
     
     public void setRoomID(int id) {
-    	this.roomID = id;
+    	Client.roomID = id;
     }
     
     public void setReceivedMessages(int roomID, List<String>msgs ) {
     	int i = 0;
-    	if(this.roomID==roomID) {
+    	if(Client.roomID==roomID) {
     		i = panel.getComponentCount();
     	} else {
     		panel.removeAll();
@@ -77,7 +75,7 @@ public class GUI extends JFrame {
     		int split = message.indexOf(':');
     		String user = message.substring(0, split);
     		String msg = message.substring(split+1);
-    		if(user.equals(username)) {
+    		if(user.equals(Client.username)) {
         		logOwnMessage(msg);
     		} else {
         		logOtherMessage(user, msg);    			
@@ -108,7 +106,7 @@ public class GUI extends JFrame {
     public void setJoinedRoom(boolean result, int roomID) {
     	if (result) {
     		//room joined
-    		this.roomID = roomID;
+    		Client.roomID = roomID;
     	} else {
     		//failed to join room
     	}
@@ -375,8 +373,6 @@ public class GUI extends JFrame {
         String text = txt.getText().trim();
         txt.setText("");
         Client.sendMsg(text);
-        Item_Left item = new Item_Left(text);
-        panel.add(item, "wrap, w 80%");
     }//GEN-LAST:event_cmdLeftActionPerformed
     
     private void logOwnMessage(String message) {

@@ -15,16 +15,17 @@ import csci455.project.chatroom.client.GUI.GUI;
 public class Client {
     static BufferedReader in;
     static PrintWriter out;
-    static int roomID = 1234; //ID of current room
+    public static int roomID = 1234; //ID of current room
     static int SERVER_PORT = 29000;
     final static Scanner sc = new Scanner(System.in);
     static GUI gui;
+    public static String username="Elijah";
     public static void main(String[] args) {
     	gui=new GUI();
     	gui.run();
     	boolean close=false;
         try {
-            Socket clientSocket = new Socket("127.0.0.1", SERVER_PORT); //loop address
+            Socket clientSocket = new Socket(args[0], SERVER_PORT); //loop address
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             try {
@@ -73,7 +74,7 @@ public class Client {
 //    	System.out.println("Sending message: "+msg);
     	out.println("SENDMESSAGE");
     	out.println(roomID);
-        out.println(msg);
+        out.println(username+":"+msg);
         out.println("END");
         out.flush();
     }
