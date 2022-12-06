@@ -9,7 +9,6 @@ public class Create extends JFrame implements ActionListener{
 	JTextField userName_text;
 	JPasswordField password_text, conf_password_text;
 	JButton submit, cancel, create;
-	Client temp = new Client();
 	Create() {
 	    // Username Label
 		user_label = new JLabel();
@@ -52,8 +51,11 @@ public class Create extends JFrame implements ActionListener{
 		String password = password_text.getText();
 		String confpassword = conf_password_text.getText();
 	   
-		if(ae.getSource() == create && confpassword.equals(conf_password_text)) {
-			temp.createAccount(userName, password);
+		if(ae.getSource() == create && confpassword.equals(password)) {
+			//Client.createAccount(userName, password);
+			JComponent comp = (JComponent) ae.getSource();
+			Window win = SwingUtilities.getWindowAncestor(comp);
+			win.dispose();
 		}
 
 	}
