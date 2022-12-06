@@ -1,6 +1,7 @@
 package csci455.project.chatroom.server.collections;
 import csci455.project.chatroom.server.models.DatabaseCredential;
 import csci455.project.chatroom.server.models.User;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -41,7 +42,7 @@ public class UserCollectionTest
     @Test
     public void testContainsKey()
     {
-        Assertions.assertTrue(userTable.containsKey(4));
+        Assertions.assertTrue(userTable.containsKey(8));
     }
 
     @Test
@@ -59,7 +60,7 @@ public class UserCollectionTest
     @Test
     public void testContainsValue()
     {
-        User user = new User(4, "test", "123");
+        User user = new User(8, "test", "123");
         Assertions.assertTrue(userTable.containsValue(user)); 
     }
 
@@ -74,15 +75,15 @@ public class UserCollectionTest
     public void testEntrySet()
     {
         Set<Map.Entry<Integer,User>> entries = new TreeSet<Map.Entry<Integer,User>>();
-        entries.add(new User(4, "test", "123"));
+        entries.add(new User(8, "test", "123"));
         Assertions.assertArrayEquals(entries.toArray(), userTable.entrySet().toArray());
     }
 
     @Test
     public void testGet()
     {
-        User expected = new User(4, "test", "123");
-        Assertions.assertEquals(expected, userTable.get(4));
+        User expected = new User(8, "test", "123");
+        Assertions.assertEquals(expected, userTable.get(8));
     }
 
     @Test
@@ -96,15 +97,49 @@ public class UserCollectionTest
     public void testKeySet()
     {
         Set<Integer> keys = new TreeSet<Integer>();
-        keys.add(4);
+        keys.add(8);
         Assertions.assertArrayEquals(keys.toArray(), userTable.keySet().toArray());
     }
 
     @Test
     public void testPutWithDuplicateKeys()
     {
-        User expected = new User(4, "test", "123");
-        User actual = userTable.put(4, new User(3, "Zak", "NdsuRules"));
+        User expected = new User(8, "test", "123");
+        User updatedUser = new User(8, "Zak", "NdsuRules");
+        User actual = userTable.put(8, updatedUser);
         Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testRemove()
+    {
+        User expected = new User(8, "Zak", "NdsuRules");
+        Assertions.assertEquals(expected, userTable.remove(8));
+    }
+
+    @Test
+    public void testRemoveWithNothing()
+    {
+        Assertions.assertNull(userTable.remove(8));
+    }
+
+    @Test
+    public void testRemoveWithElementNotContainingKey()
+    {
+        Assertions.assertNull(userTable.remove(8));
+    }
+
+    @Test
+    public void testSize()
+    {
+        Assertions.assertEquals(1, userTable.size());
+    }
+
+    @Test
+    public void testValues()
+    {
+        Collection<User> expected = new TreeSet<User>();
+        expected.add(new User(9, "test", "123"));
+        Assertions.assertArrayEquals(expected.toArray(), userTable.values().toArray());
     }
 }

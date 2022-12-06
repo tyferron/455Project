@@ -18,6 +18,7 @@ public class MapperTest
     }
 
     @Test
+<<<<<<< HEAD
     public void testGetNextId()
     {
         int expected = 3;
@@ -26,5 +27,10 @@ public class MapperTest
         String tableName = "Users";
         int actual = Mapper.getNextId(connection, tableName);
         Assertions.assertEquals(expected, actual);
+=======
+    public void testConnection()
+    {
+        Assertions.assertNotNull(Mapper.getConnection(credential));
+>>>>>>> merge-zak-main-2p2
     }
 }

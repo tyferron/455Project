@@ -1,7 +1,7 @@
 package csci455.project.chatroom.server.collections;
 import csci455.project.chatroom.server.Mapper;
+import csci455.project.chatroom.server.models.ChatRoom;
 import csci455.project.chatroom.server.models.DatabaseCredential;
-import csci455.project.chatroom.server.models.User;
 import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,21 +11,30 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-public class UserCollection implements Closeable, Map<Integer, User> {
+public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
+{
     private final Connection connection;
+    private final Set<String> passwords;
+    private final Set<String> roomNames;
 
-    public UserCollection(DatabaseCredential credential) {
+    public ChatRoomCollection(DatabaseCredential credential)
+    {
         connection = Mapper.getConnection(credential);
+        passwords = new HashSet<String>();
+        roomNames = new HashSet<String>();
+        initUserNamesAndPasswords();
     }
 
-    public void clear() {
-        String sql = "DELETE FROM public.\"Users\";";
+    public void clear() 
+    {
+        String sql = "DELETE FROM public.\"ChatRoom\";";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.executeQuery();
             connection.commit();
             statement.close();
+            passwords.clear();
+            roomNames.clear();
         } catch (SQLException ex) {
             System.out.println("Unable to clear the records.");
             ex.printStackTrace();
@@ -46,7 +55,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
             return false;
         }
         Integer id = (Integer) key;
-        ResultSet result = Mapper.resultOf(connection, "SELECT * FROM public.\"Users\" WHERE \"UserID\" = " + id + ";");
+        ResultSet result = Mapper.resultOf(connection, "SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + id + ";");
         try {
             return result.next();
         } catch (SQLException ex) {
@@ -57,11 +66,11 @@ public class UserCollection implements Closeable, Map<Integer, User> {
     }
 
     public boolean containsValue(Object value) {
-        if (value instanceof User) {
-            User user = (User) value;
-            ResultSet table = Mapper.resultOf(connection, "SELECT * FROM public.\"Users\" WHERE " +
-                    "\"UserName\" = '" + user.getUserName() + "' AND \"Password\" = '" + user.getPassword() +
-                    "';");
+        if (value instanceof ChatRoom) {
+            ChatRoom room = (ChatRoom) value;
+            ResultSet table = Mapper.resultOf(connection, "SELECT * FROM public.\"ChatRoom\" WHERE " +
+                    "\"RoomName\" = '" + room.getRoomName() + "' AND \"Password\" = '" + room.getPassword()
+                    + "' AND \"MessageHistory\" = '" + room.getMessageHistory() + "';");
             try {
                 return table.next();
             } catch (SQLException ex) {
@@ -72,13 +81,13 @@ public class UserCollection implements Closeable, Map<Integer, User> {
         return false;
     }
 
-    public Set<Map.Entry<Integer, User>> entrySet() {
-        Set<Map.Entry<Integer, User>> entries = new HashSet<Map.Entry<Integer, User>>();
-        ResultSet table = Mapper.resultOf(connection, "SELECT * FROM \"Users\";");
+    public Set<Map.Entry<Integer, ChatRoom>> entrySet() {
+        Set<Map.Entry<Integer, ChatRoom>> entries = new HashSet<Map.Entry<Integer, ChatRoom>>();
+        ResultSet table = Mapper.resultOf(connection, "SELECT * FROM \"ChatRoom\";");
         try {
             while (table.next()) {
-                User current = new User(table.getInt(1), table.getString(2),
-                        table.getString(3));
+                ChatRoom current = new ChatRoom(table.getInt(1), table.getString(2),
+                        table.getString(3), table.getString(4));
                 entries.add(current);
             }
             table.close();
@@ -89,12 +98,13 @@ public class UserCollection implements Closeable, Map<Integer, User> {
         return entries;
     }
 
-    public User get(Object key) {
+    public ChatRoom get(Object key) {
         if (key instanceof Integer) {
             Integer id = (Integer) key;
-            ResultSet table = Mapper.resultOf(connection, "SELECT * FROM public.\"Users\" WHERE \"UserID\" = " + id + ";");
+            ResultSet table = Mapper.resultOf(connection,"SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + id + ";");
             try {
-                return table.next() ? new User(table.getInt(1), table.getString(2), table.getString(3)) : null;
+                return table.next() ? new ChatRoom(table.getInt(1), table.getString(2),
+                 table.getString(3), table.getString(4)) : null;
             } catch (SQLException ex) {
                 System.out.println("Unable to retrieve a User.");
                 ex.printStackTrace();
@@ -109,7 +119,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
 
     public Set<Integer> keySet() {
         Set<Integer> keys = new HashSet<Integer>();
-        ResultSet table = Mapper.resultOf(connection,"SELECT * FROM public.\"Users\";");
+        ResultSet table = Mapper.resultOf(connection, "SELECT * FROM public.\"ChatRoom\";");
         try {
             while (table.next()) {
                 keys.add(table.getInt(1));
@@ -122,22 +132,31 @@ public class UserCollection implements Closeable, Map<Integer, User> {
         return keys;
     }
 
-    public User put(Integer key, User value) {
-        User previous = get(key);
+    public ChatRoom put(Integer key, ChatRoom value) {
+        if (!roomNames.add(value.getRoomName()))
+        {
+            throw new IllegalArgumentException("The Room name has already been taken.");
+        }
+        else if (!passwords.add(value.getPassword()))
+        {
+            throw new IllegalArgumentException("The Passowrd has already been taken.");
+        }
+        ChatRoom previous = get(key);
         try {
             String sql;
             if (previous == null) // Add case
             {
-                sql = "INSERT INTO public.\"Users\" (\"UserName\", \"Password\") VALUES ('" +
-                        value.getUserName() + "', '" + value.getPassword() + "');";
+                sql = "INSERT INTO public.\"ChatRoom\" (\"RoomName\", \"Password\", \"MessageHistory\") VALUES ('" +
+                        value.getRoomName() + "', '" + value.getPassword() + "', '" + value.getMessageHistory() + "');";
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.executeQuery();
                 statement.close();
                 connection.commit();
             } else // Update case
             {
-                sql = "UPDATE public.\"Users\" SET \"UserName\" = '" + value.getUserName() + "', " +
-                        "\"Password\" = '" + value.getPassword() + "' WHERE \"UserID\" = " + key + ";";
+                sql = "UPDATE public.\"ChatRoom\" SET \"RoomName\" = '" + value.getRoomName() + "', " +
+                        "\"Password\" = '" + value.getPassword() + "', \"MessageHistory\" = '" + value.getMessageHistory() + 
+                        "' WHERE \"RoomID\" = " + key + ";";
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.executeQuery();
                 statement.close();
@@ -150,23 +169,25 @@ public class UserCollection implements Closeable, Map<Integer, User> {
         return previous;
     }
 
-    public void putAll(Map<? extends Integer, ? extends User> m) {
-        for (Map.Entry<? extends Integer, ? extends User> entry : m.entrySet()) {
+    public void putAll(Map<? extends Integer, ? extends ChatRoom> m) {
+        for (Map.Entry<? extends Integer, ? extends ChatRoom> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
 
-    public User remove(Object key) {
-        User previous = get(key);
+    public ChatRoom remove(Object key) {
+        ChatRoom previous = get(key);
         if (previous != null)
         {
-            String sql = "DELETE FROM public.\"Users\" WHERE \"UserID\" = " + previous.getKey() + ";";
+            String sql = "DELETE FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + previous.getKey() + ";";
             try 
             {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.execute();
                 statement.close();
                 connection.commit();
+                roomNames.remove(previous.getRoomName());
+                passwords.remove(previous.getPassword());
             } 
             catch (SQLException ex) 
             {
@@ -178,7 +199,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
     }
 
     public int size() {
-        ResultSet result = Mapper.resultOf(connection, "SELECT COUNT(\"UserID\") FROM public.\"Users\";");
+        ResultSet result = Mapper.resultOf(connection, "SELECT COUNT(\"RoomID\") FROM public.\"ChatRoom\";");
         try {
             return result.next() ? result.getInt(1) : 0;
         } catch (SQLException ex) {
@@ -187,12 +208,21 @@ public class UserCollection implements Closeable, Map<Integer, User> {
         return 0;
     }
 
-    public Collection<User> values() {
-        Collection<User> users = new HashSet<User>();
-        for (Map.Entry<Integer, User> entry : entrySet()) {
+    public Collection<ChatRoom> values() {
+        Collection<ChatRoom> users = new HashSet<ChatRoom>();
+        for (Map.Entry<Integer, ChatRoom> entry : entrySet()) {
             users.add(entry.getValue());
         }
         return users;
     }
 
+    private void initUserNamesAndPasswords()
+    {
+        Collection<ChatRoom> currentRooms = values();
+        for (ChatRoom room : currentRooms)
+        {
+            passwords.add(room.getPassword());
+            roomNames.add(room.getRoomName());
+        }
+    }
 }
