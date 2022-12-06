@@ -25,8 +25,8 @@ public class Client {
 
     	Login login = new Login();
     	username = login.getUsername();
-    	gui=new GUI();
-    	gui.run();
+//    	gui=new GUI();
+//    	gui.run();
     	boolean close=false;
         try {
             Socket clientSocket = new Socket(args[0], SERVER_PORT); //loop address
@@ -44,17 +44,17 @@ public class Client {
                 Thread receiver = new ReceiverThread();
                 receiver.start();
 
-            	gui=new GUI();
-            	gui.run();
-            	gui.setVisible(false);
-            	
+            	System.out.println("Pre");
             	
 
             	while(username.equals("")) {
+            		System.out.println(username);
             		continue;
             	}
-                gui.setVisible(true);
-                Thread messageGetterThread = new Thread(new Runnable() {
+            	System.out.println("Past");
+            	gui=new GUI();
+            	gui.run();
+            	Thread messageGetterThread = new Thread(new Runnable() {
 					
 					@Override
 					public void run() {

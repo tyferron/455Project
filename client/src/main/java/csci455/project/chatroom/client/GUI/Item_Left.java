@@ -17,6 +17,8 @@ public class Item_Left extends JLayeredPane {
         float hue = 0.0F;
         for(char c : user.toCharArray()) { hue+=c; }
         txt.setBgColor(new Color(Color.HSBtoRGB((hue%75)/75.0F, 0.8F, 1F)));
+        jLabel1.setText(user);
+        jLabel1.setToolTipText(user);
     }
 
     /**

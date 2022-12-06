@@ -21,7 +21,6 @@ public class ClientConnection extends Thread {
     
     int userID;
     
-    byte[] request = new byte[1024];
     public ClientConnection(Socket clientSocket){
         this.clientSocket = clientSocket;
         try {
@@ -113,7 +112,11 @@ public class ClientConnection extends Thread {
             		//END
             	toClientWriter.println("CREATEACCOUNT");
             	userID=createAccount(request[1], request[2]);
-            	toClientWriter.println(userID);
+            	if(userID>0) {
+            		toClientWriter.println(new UserCollection(Server.credential).get(userID).getUserName());
+            	} else {
+            		toClientWriter.println();
+            	}
             	toClientWriter.println("END");
             	toClientWriter.flush();
                 break;
@@ -252,9 +255,10 @@ public class ClientConnection extends Thread {
     }
     
     private int testLogin(String username, String hashedPass) {
-    	ResultSet result = Mapper.resultOf(Server.conn, "SELECT * FROM public.\"Users\" WHERE \"UserName\" = " + request[1] + ";");
+    	ResultSet result = Mapper.resultOf(Server.conn, "SELECT * FROM public.\"Users\" WHERE \"UserName\" = '" + username + "';");
     	try {
 			User user = result.next() ? new User(result.getInt(1), result.getString(2), result.getString(3)) : null;
+			System.out.println(user);
 			if(user==null) { return -1; }
 			if(user.getPassword().equals(hashedPass)) {
 				return user.getKey();
@@ -268,8 +272,19 @@ public class ClientConnection extends Thread {
 		}
     }
 	private int createAccount(String username, String hashedPass) {
-		//TODO create the account
-		return -1; //TODO return userID if created, -1 if an error was encountered (likely username already exists)
+		ResultSet result = Mapper.resultOf(Server.conn, "SELECT * FROM public.\"Users\" WHERE \"UserName\" = '" + username + "';");
+		try {
+			User user = result.next() ? new User(result.getInt(1), result.getString(2), result.getString(3)) : null;
+			System.out.println(user);
+			System.out.println(result);
+			if(user!=null) { return -1; }
+			Mapper.execute(Server.conn, "INSERT INTO public.\"Users\" (\"UserName\", \"Password\") VALUES('"+username+"','"+hashedPass+"')");
+			return testLogin(username, hashedPass);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
 	}
 	private boolean joinRoom(String roomID, String hashedPass) {
 		//TODO update user-room table

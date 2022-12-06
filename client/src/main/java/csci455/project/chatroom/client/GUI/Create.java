@@ -51,7 +51,7 @@ public class Create extends JFrame implements ActionListener{
 		String userName = userName_text.getText();
 		String password = String.valueOf(password_text.getPassword());
 		String confpassword = String.valueOf(conf_password_text.getPassword());
-	   
+		if(password==null||password.trim().equals("")) {return;}
 		if(ae.getSource() == create && confpassword.equals(password)) {
 			Client.createAccount(userName, password);
 			JComponent comp = (JComponent) ae.getSource();
