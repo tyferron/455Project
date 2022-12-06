@@ -2,6 +2,7 @@
 /.metadata/
 /*/.settings/
 /*/.classpath
-/*/.project
+**/.project
+.project
 /*/target/
 /*/bin/
