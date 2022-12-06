@@ -9,10 +9,10 @@ CREATE DATABASE "ChatroomDB"
 
 CREATE TABLE IF NOT EXISTS public."ChatRoom"
 (
-    "RoomID" integer NOT NULL DEFAULT nextval('"ChatRoom_RoomID_seq"'::regclass),
-    "RoomName" character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    "Password" character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    "MessageHistory" character varying(40) COLLATE pg_catalog."default" NOT NULL,
+    "RoomID" SERIAL,
+    "RoomName" text COLLATE pg_catalog."default" NOT NULL,
+    "Password" text COLLATE pg_catalog."default" NOT NULL,
+    "MessageHistory" text COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT "ChatRoom_pkey" PRIMARY KEY ("RoomID")
 )
 
@@ -23,9 +23,9 @@ ALTER TABLE IF EXISTS public."ChatRoom"
 
 CREATE TABLE IF NOT EXISTS public."Users"
 (
-    "UserID" integer NOT NULL DEFAULT nextval('"Users_UserID_seq"'::regclass),
-    "UserName" character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    "Password" character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    "UserID" SERIAL,
+    "UserName" text COLLATE pg_catalog."default" NOT NULL,
+    "Password" text COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT "Pk_Users" PRIMARY KEY ("UserID")
 )
 
