@@ -41,7 +41,7 @@ import net.miginfocom.swing.MigLayout;
 public class GUI extends JFrame {
 	
 	private int userID;
-	private int roomID;
+	private int roomID=1234;
 	private String username="user1";
 
   
@@ -66,8 +66,14 @@ public class GUI extends JFrame {
     }
     
     public void setReceivedMessages(int roomID, List<String>msgs ) {
-    	panel.removeAll();
-    	for(String message : msgs) {
+    	int i = 0;
+    	if(this.roomID==roomID) {
+    		i = panel.getComponentCount();
+    	} else {
+    		panel.removeAll();
+    	}
+    	while(i < msgs.size()) {
+    		String message = msgs.get(i);
     		int split = message.indexOf(':');
     		String user = message.substring(0, split);
     		String msg = message.substring(split+1);
@@ -76,6 +82,7 @@ public class GUI extends JFrame {
     		} else {
         		logOtherMessage(user, msg);    			
     		}
+    		i++;
     	}
         panel.repaint();
         panel.revalidate();
