@@ -3,6 +3,7 @@ import csci455.project.chatroom.client.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+@SuppressWarnings("serial")
 public class Create extends JFrame implements ActionListener{
 	JPanel panel;
 	JLabel user_label, password_label, message, conf_password_label;
@@ -48,11 +49,11 @@ public class Create extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		String userName = userName_text.getText();
-		String password = password_text.getText();
-		String confpassword = conf_password_text.getText();
+		String password = String.valueOf(password_text.getPassword());
+		String confpassword = String.valueOf(conf_password_text.getPassword());
 	   
 		if(ae.getSource() == create && confpassword.equals(password)) {
-			//Client.createAccount(userName, password);
+			Client.createAccount(userName, password);
 			JComponent comp = (JComponent) ae.getSource();
 			Window win = SwingUtilities.getWindowAncestor(comp);
 			win.dispose();

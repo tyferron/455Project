@@ -1,10 +1,21 @@
 
 package csci455.project.chatroom.client.GUI;
 
-import csci455.project.chatroom.client.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+@SuppressWarnings("serial")
 public class Login extends JFrame implements ActionListener{
 	JPanel panel;
 	   JLabel user_label, password_label, message;
@@ -52,7 +63,7 @@ public class Login extends JFrame implements ActionListener{
 	   @Override
 	   public void actionPerformed(ActionEvent ae) {
 		   String userName = userName_text.getText();
-		   String password = password_text.getText();
+		   String password = String.valueOf(password_text.getPassword());
 		   
 		   if(ae.getSource() == create) {
 			   Create create = new Create();
