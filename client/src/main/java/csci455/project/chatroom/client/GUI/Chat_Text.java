@@ -1,4 +1,4 @@
-package main;
+package csci455.project.chatroom.client.GUI;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JTextPane;
 
+@SuppressWarnings("serial")
 public class Chat_Text extends JTextPane {
 
     public Color getBorderColor() {
