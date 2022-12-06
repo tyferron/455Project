@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -83,6 +84,10 @@ public class GUI extends JFrame {
     		}
     		i++;
     	}
+    	panel.revalidate();
+    	int height = (int)panel.getPreferredSize().getHeight();
+    	Rectangle rect = new Rectangle(0,height,10,10);
+    	panel.scrollRectToVisible(rect);
         panel.repaint();
         panel.revalidate();
     	//do what you want with the list of messages here
@@ -191,6 +196,7 @@ public class GUI extends JFrame {
 
         GroupLayout panelLayout = new GroupLayout(panel);
         panel.setLayout(panelLayout);
+        
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 1517, Short.MAX_VALUE)

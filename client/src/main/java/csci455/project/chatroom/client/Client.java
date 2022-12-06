@@ -19,8 +19,9 @@ public class Client {
     static int SERVER_PORT = 29000;
     final static Scanner sc = new Scanner(System.in);
     static GUI gui;
-    public static String username="Eli";
+    public static String username="Pink";
     public static void main(String[] args) {
+    	username = args[1];
     	gui=new GUI();
     	gui.run();
     	boolean close=false;
