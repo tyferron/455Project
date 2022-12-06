@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 import csci455.project.chatroom.client.GUI.GUI;
+import csci455.project.chatroom.client.GUI.Login;
 
 public class Client {
     static BufferedReader in;
@@ -19,9 +20,14 @@ public class Client {
     static int SERVER_PORT = 29000;
     final static Scanner sc = new Scanner(System.in);
     static GUI gui;
-    public static String username="Pink";
+    public static String username="Nick";
     public static void main(String[] args) {
-    	username = args[1];
+    	username = args[0];
+
+    	Login login = new Login();
+    	username = login.getUsername();
+    	while(username.equals(""))
+    		username = login.getUsername();
     	gui=new GUI();
     	gui.run();
     	boolean close=false;
