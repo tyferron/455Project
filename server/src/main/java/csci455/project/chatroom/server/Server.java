@@ -5,11 +5,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import csci455.project.chatroom.server.models.DatabaseCredential;
 
 public class Server 
 {
+	static Map<Integer, String> messageHistory = new HashMap<>();
     static int SERVER_PORT = 29000;
     static Connection conn;
     private static DatabaseCredential credential;

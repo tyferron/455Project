@@ -19,7 +19,7 @@ public class Client {
     static int SERVER_PORT = 29000;
     final static Scanner sc = new Scanner(System.in);
     static GUI gui;
-    public static String username="Elijah";
+    public static String username="Eli";
     public static void main(String[] args) {
     	gui=new GUI();
     	gui.run();

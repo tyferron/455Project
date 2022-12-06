@@ -11,9 +11,21 @@ import javax.swing.JLayeredPane;
 @SuppressWarnings("serial")
 public class Item_Left extends JLayeredPane {
 
-    public Item_Left(String text) {
+    public Item_Left(String user, String text) {
         initComponents();
         txt.setText(text);
+        String redShift = user.substring(0, user.length()/3);
+        String greenShift = user.substring(user.length()/3, 2*user.length()/3);
+        String blueShift = user.substring(2*user.length()/3);
+        int rS=0;
+        int gS=0;
+        int bS=0;
+        for(char c : redShift.toCharArray()) { rS+=c; }
+        for(char c : greenShift.toCharArray()) { gS+=c; }
+        for(char c : blueShift.toCharArray()) { bS+=c; }
+        double big=rS>gS?(rS>bS?rS:(bS>gS?bS:gS)):(gS>bS?gS:bS);
+        
+        txt.setBgColor(new Color((int)(255*(rS/big)), (int)(255*(gS/big)), (int)(255*(bS/big))));
     }
 
     /**

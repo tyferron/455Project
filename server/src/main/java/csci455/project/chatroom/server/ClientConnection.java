@@ -207,10 +207,25 @@ public class ClientConnection extends Thread {
     }
 
     private String[] getMessages(int roomID){
-        return new String[]{"MESSAGESGOT",roomID+"", "user1:TODO1", "user2:TODO2", "user1:TODO3", "user3:TODO4", "user1:TODO5", "user4:TODO6"}; //TODO replace todo string with poking the DB 
+    	if(Server.messageHistory.get(roomID)==null) {
+    		return new String[] {"MESSAGESGOT", roomID+""};
+    	}
+    	String[] hist = Server.messageHistory.get(roomID).split("\n");
+    	String[] result = new String[2+hist.length];
+        result[0]="MESSAGESGOT";
+        result[1]=roomID+"";
+        for(int i = 0; i < hist.length; i++) {
+        	result[i+2]=hist[i];
+        }
+    	return result;
     }
 
     private String[] sendMessage(int roomID, String message){
+    	if(Server.messageHistory.get(roomID)==null) {
+    		Server.messageHistory.put(roomID, message);
+    	} else {
+    		Server.messageHistory.put(roomID, Server.messageHistory.get(roomID)+"\n"+message);
+    	}
         //TODO *roomID* message history updated with *message*. Remember safe data handling!
         return getMessages(roomID);
     }

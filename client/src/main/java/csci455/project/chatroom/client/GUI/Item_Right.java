@@ -15,9 +15,22 @@ public class Item_Right extends JLayeredPane {
     public Item_Right(String user, String text) {
         initComponents();
         txt.setText(text);
+        String redShift = user.substring(0, user.length()/3);
+        String greenShift = user.substring(user.length()/3, 2*user.length()/3);
+        String blueShift = user.substring(2*user.length()/3);
+        double rS=0;
+        double gS=0;
+        double bS=0;
+        for(char c : redShift.toCharArray()) { rS+=c; }
+        for(char c : greenShift.toCharArray()) { gS+=c; }
+        for(char c : blueShift.toCharArray()) { bS+=c; }
+        double big=rS>gS?(rS>bS?rS:(bS>gS?bS:gS)):(gS>bS?gS:bS);
+        
+        txt.setBgColor(new Color((int)(255*(rS/big)), (int)(255*(gS/big)), (int)(255*(bS/big))));
         jLabel1.setBackground(new Color(255, 255, 255));
         jLabel1.setForeground(new Color(127, 127, 127));
         jLabel1.setText(user);
+        jLabel1.setToolTipText(user);
     }
 
     /**

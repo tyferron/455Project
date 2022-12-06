@@ -72,6 +72,7 @@ public class GUI extends JFrame {
     	}
     	while(i < msgs.size()) {
     		String message = msgs.get(i);
+    		System.out.println(message);
     		int split = message.indexOf(':');
     		String user = message.substring(0, split);
     		String msg = message.substring(split+1);
@@ -376,7 +377,7 @@ public class GUI extends JFrame {
     }//GEN-LAST:event_cmdLeftActionPerformed
     
     private void logOwnMessage(String message) {
-    	Item_Left item = new Item_Left(message);
+    	Item_Left item = new Item_Left(Client.username, message);
         panel.add(item, "wrap, w 80%");
     }
     
