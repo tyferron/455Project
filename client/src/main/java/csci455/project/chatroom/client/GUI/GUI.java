@@ -376,7 +376,9 @@ public class GUI extends JFrame {
     private void cmdLeftActionPerformed(ActionEvent evt) {//GEN-FIRST:event_cmdLeftActionPerformed
         String text = txt.getText().trim();
         txt.setText("");
-        Client.sendMsg(text);
+        if(!text.equals("")) {
+            Client.sendMsg(text);        	
+        }
     }//GEN-LAST:event_cmdLeftActionPerformed
     
     private void logOwnMessage(String message) {
