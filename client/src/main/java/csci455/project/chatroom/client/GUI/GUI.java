@@ -11,30 +11,6 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.LayoutStyle;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
-import javax.swing.border.BevelBorder;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,7 +42,7 @@ public class GUI extends JFrame {
 	
 	private int userID;
 	private int roomID;
-	private String username;
+	private String username="user1";
 
   
     NewChat log;
@@ -90,6 +66,19 @@ public class GUI extends JFrame {
     }
     
     public void setReceivedMessages(int roomID, List<String>msgs ) {
+    	panel.removeAll();
+    	for(String message : msgs) {
+    		int split = message.indexOf(':');
+    		String user = message.substring(0, split);
+    		String msg = message.substring(split+1);
+    		if(user.equals(username)) {
+        		logOwnMessage(msg);
+    		} else {
+        		logOtherMessage(user, msg);    			
+    		}
+    	}
+        panel.repaint();
+        panel.revalidate();
     	//do what you want with the list of messages here
     }
     
@@ -381,9 +370,17 @@ public class GUI extends JFrame {
         Client.sendMsg(text);
         Item_Left item = new Item_Left(text);
         panel.add(item, "wrap, w 80%");
-        panel.repaint();
-        panel.revalidate();
     }//GEN-LAST:event_cmdLeftActionPerformed
+    
+    private void logOwnMessage(String message) {
+    	Item_Left item = new Item_Left(message);
+        panel.add(item, "wrap, w 80%");
+    }
+    
+    private void logOtherMessage(String user, String message) {
+    	Item_Right item = new Item_Right(user, message);
+        panel.add(item, "wrap, w 80%");
+    }
 
     private void jButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         log.setVisible(true); // Main Form to show after the Login Form..

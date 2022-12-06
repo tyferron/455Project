@@ -207,7 +207,7 @@ public class ClientConnection extends Thread {
     }
 
     private String[] getMessages(int roomID){
-        return new String[]{"MESSAGESGOT",roomID+"", "TODO"}; //TODO replace todo string with poking the DB 
+        return new String[]{"MESSAGESGOT",roomID+"", "user1:TODO1", "user2:TODO2", "user1:TODO3", "user3:TODO4", "user1:TODO5", "user4:TODO6"}; //TODO replace todo string with poking the DB 
     }
 
     private String[] sendMessage(int roomID, String message){

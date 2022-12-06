@@ -12,9 +12,12 @@ import javax.swing.LayoutStyle;
 @SuppressWarnings("serial")
 public class Item_Right extends JLayeredPane {
 
-    public Item_Right(String text) {
+    public Item_Right(String user, String text) {
         initComponents();
         txt.setText(text);
+        jLabel1.setBackground(new Color(255, 255, 255));
+        jLabel1.setForeground(new Color(127, 127, 127));
+        jLabel1.setText(user);
     }
 
     /**
