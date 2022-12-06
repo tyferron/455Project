@@ -240,14 +240,14 @@ public class ClientConnection extends Thread {
     }
 
     private String[] sendMessage(int roomID, String message){
-    	ResultSet result = Mapper.resultOf(Server.conn, "SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + roomID + ";");
+    	ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + roomID + ";");
     	try {
 			ChatRoom room = result.next() ? new ChatRoom(result.getInt(1), result.getString(2), result.getString(3), result.getString(4)) : null;
 			if(room==null) { return null; }
 			String newHistory = room.getMessageHistory();
 			if(newHistory==null||newHistory.trim().equals("null")||newHistory.trim().equals("")) { newHistory = message; }
 			else { newHistory+="\n" + message; }
-			Mapper.execute(Server.conn, "UPDATE public.\"ChatRoom\" SET \"MessageHistory\"='"+newHistory+"' WHERE \"RoomID\" = " + roomID + ";");
+			Mapper.execute(Server.getConn(), "UPDATE public.\"ChatRoom\" SET \"MessageHistory\"='"+newHistory+"' WHERE \"RoomID\" = " + roomID + ";");
     	} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -255,7 +255,7 @@ public class ClientConnection extends Thread {
     }
     
     private int testLogin(String username, String hashedPass) {
-    	ResultSet result = Mapper.resultOf(Server.conn, "SELECT * FROM public.\"Users\" WHERE \"UserName\" = '" + username + "';");
+    	ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"Users\" WHERE \"UserName\" = '" + username + "';");
     	try {
 			User user = result.next() ? new User(result.getInt(1), result.getString(2), result.getString(3)) : null;
 			System.out.println(user);
@@ -272,13 +272,13 @@ public class ClientConnection extends Thread {
 		}
     }
 	private int createAccount(String username, String hashedPass) {
-		ResultSet result = Mapper.resultOf(Server.conn, "SELECT * FROM public.\"Users\" WHERE \"UserName\" = '" + username + "';");
+		ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"Users\" WHERE \"UserName\" = '" + username + "';");
 		try {
 			User user = result.next() ? new User(result.getInt(1), result.getString(2), result.getString(3)) : null;
 			System.out.println(user);
 			System.out.println(result);
 			if(user!=null) { return -1; }
-			Mapper.execute(Server.conn, "INSERT INTO public.\"Users\" (\"UserName\", \"Password\") VALUES('"+username+"','"+hashedPass+"')");
+			Mapper.execute(Server.getConn(), "INSERT INTO public.\"Users\" (\"UserName\", \"Password\") VALUES('"+username+"','"+hashedPass+"')");
 			return testLogin(username, hashedPass);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

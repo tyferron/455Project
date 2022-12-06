@@ -12,35 +12,25 @@ public class Server
 {
 //	static Map<Integer, String> messageHistory = new HashMap<>();
     static int SERVER_PORT = 29000;
-    public static Connection conn;
+    private static Connection conn;
+    public static Connection getConn() {
+    	if(conn==null) {
+    		credential = new DatabaseCredential(5432, "ChatroomDB", 
+    		        "postgres", "postgres");
+    		conn = Mapper.getConnection(credential);
+    		try {
+				conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	return conn;
+    }
     static DatabaseCredential credential;
     public static void main(String[] args)
     {
     	boolean close=false;
-    	try
-        {
-    		credential = new DatabaseCredential(5432, "ChatroomDB", 
-    		        "postgres", "postgres");
-    		conn = Mapper.getConnection(credential);
-    		conn.setAutoCommit(true);
-            System.out.println("DB Connection Sucessfull.");
-        }
-        catch (Exception ex)
-        {
-            if (ex instanceof ClassNotFoundException)
-            {
-                System.out.println("Unable to find driver.");
-            }
-            else if (ex instanceof SQLException)
-            {
-                System.out.println("Connection Unsuccessfull.");
-            }
-            else
-            {
-                System.out.println(ex.getClass().getName());
-            }
-            ex.printStackTrace();
-        }
         try{
             ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
             System.out.println("Opening server on port: "+SERVER_PORT);
