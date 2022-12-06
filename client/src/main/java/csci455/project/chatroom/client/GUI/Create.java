@@ -21,7 +21,7 @@ public class Create extends JFrame implements ActionListener{
 	    password_text = new JPasswordField();
 	    // Confirm Password
 	    conf_password_label = new JLabel();
-	    conf_password_label.setText("Password :");
+	    conf_password_label.setText("Retype Password :");
 	    conf_password_text = new JPasswordField();
 	    create = new JButton("Create");
 	    panel = new JPanel(new GridLayout(4, 2));

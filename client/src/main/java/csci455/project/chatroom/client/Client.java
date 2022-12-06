@@ -22,12 +22,9 @@ public class Client {
     static GUI gui;
     public static String username="Nick";
     public static void main(String[] args) {
-    	username = args[0];
 
     	Login login = new Login();
     	username = login.getUsername();
-    	while(username.equals(""))
-    		username = login.getUsername();
     	gui=new GUI();
     	gui.run();
     	boolean close=false;
@@ -46,6 +43,17 @@ public class Client {
 //                sender.start();
                 Thread receiver = new ReceiverThread();
                 receiver.start();
+
+            	gui=new GUI();
+            	gui.run();
+            	gui.setVisible(false);
+            	
+            	
+
+            	while(username.equals("")) {
+            		continue;
+            	}
+                gui.setVisible(true);
                 Thread messageGetterThread = new Thread(new Runnable() {
 					
 					@Override
@@ -203,6 +211,7 @@ public class Client {
     }
     
     private static String hashString(String password) {
+    	if(password==null||password.trim().equals("")) { return ""; }
     	MessageDigest md;
     	try
         {

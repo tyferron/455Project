@@ -47,8 +47,20 @@ public class Mapper {
             PreparedStatement statement = connection.prepareStatement(sql);
             return statement.executeQuery();
         } catch (SQLException ex) {
-            System.out.println("Unable to load the Users Table.");
+        	System.err.println(sql);
+        	ex.printStackTrace();
             return null;
+        }
+    }
+    
+    public static boolean execute(Connection connection, String sql) {
+    	try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            return statement.execute();
+        } catch (SQLException ex) {
+        	System.err.println(sql);
+        	ex.printStackTrace();
+            return false;
         }
     }
 }

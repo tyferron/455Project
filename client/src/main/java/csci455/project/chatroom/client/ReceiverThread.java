@@ -35,7 +35,7 @@ public class ReceiverThread extends Thread {
 //    		}
     		break;
     	case "LOGIN":
-    		Client.gui.setLogin(Integer.parseInt(response.get(1)));
+    		Client.username=response.get(1);
 //    		if(Integer.parseInt(response.get(1))== -1) {
 //    			System.out.println("Login unsuccessful!");
 //    			Client.gui.setUserID(MAX_PRIORITY);

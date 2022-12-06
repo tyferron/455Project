@@ -1,7 +1,17 @@
 package csci455.project.chatroom.server;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
+
+import csci455.project.chatroom.server.collections.ChatRoomCollection;
+import csci455.project.chatroom.server.collections.UserCollection;
+import csci455.project.chatroom.server.models.ChatRoom;
+import csci455.project.chatroom.server.models.User;
 
 public class ClientConnection extends Thread {
     Socket clientSocket;
@@ -80,11 +90,15 @@ public class ClientConnection extends Thread {
             		// hashed password
             	//TOCLIENT:
             		//LOGIN
-            		//userID, -1 if error
+            		//userName, empty if error
             		//END
             	toClientWriter.println("LOGIN");
             	userID=testLogin(request[1], request[2]);
-            	toClientWriter.println(userID);
+            	if(userID>0) {
+            		toClientWriter.println(new UserCollection(Server.credential).get(userID).getUserName());
+            	} else {
+            		toClientWriter.println();
+            	}
             	toClientWriter.println("END");
             	toClientWriter.flush();
                 break;
@@ -207,10 +221,12 @@ public class ClientConnection extends Thread {
     }
 
     private String[] getMessages(int roomID){
-    	if(Server.messageHistory.get(roomID)==null) {
+    	ChatRoomCollection roomTable = new ChatRoomCollection(Server.credential);
+    	System.out.println(roomID);
+    	if(roomTable.get(roomID).getMessageHistory()==null||roomTable.get(roomID).getMessageHistory().trim().equals("")) {
     		return new String[] {"MESSAGESGOT", roomID+""};
     	}
-    	String[] hist = Server.messageHistory.get(roomID).split("\n");
+    	String[] hist = roomTable.get(roomID).getMessageHistory().split("\n");
     	String[] result = new String[2+hist.length];
         result[0]="MESSAGESGOT";
         result[1]=roomID+"";
@@ -221,17 +237,35 @@ public class ClientConnection extends Thread {
     }
 
     private String[] sendMessage(int roomID, String message){
-    	if(Server.messageHistory.get(roomID)==null) {
-    		Server.messageHistory.put(roomID, message);
-    	} else {
-    		Server.messageHistory.put(roomID, Server.messageHistory.get(roomID)+"\n"+message);
-    	}
-        //TODO *roomID* message history updated with *message*. Remember safe data handling!
+    	ResultSet result = Mapper.resultOf(Server.conn, "SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + roomID + ";");
+    	try {
+			ChatRoom room = result.next() ? new ChatRoom(result.getInt(1), result.getString(2), result.getString(3), result.getString(4)) : null;
+			if(room==null) { return null; }
+			String newHistory = room.getMessageHistory();
+			if(newHistory==null||newHistory.trim().equals("null")||newHistory.trim().equals("")) { newHistory = message; }
+			else { newHistory+="\n" + message; }
+			Mapper.execute(Server.conn, "UPDATE public.\"ChatRoom\" SET \"MessageHistory\"='"+newHistory+"' WHERE \"RoomID\" = " + roomID + ";");
+    	} catch (SQLException e) {
+			e.printStackTrace();
+		}
         return getMessages(roomID);
     }
     
     private int testLogin(String username, String hashedPass) {
-		return -1; //TODO return userid if valid, -1 if an error was encountered (username DNE or pass doesn't match)
+    	ResultSet result = Mapper.resultOf(Server.conn, "SELECT * FROM public.\"Users\" WHERE \"UserName\" = " + request[1] + ";");
+    	try {
+			User user = result.next() ? new User(result.getInt(1), result.getString(2), result.getString(3)) : null;
+			if(user==null) { return -1; }
+			if(user.getPassword().equals(hashedPass)) {
+				return user.getKey();
+			} else {
+				return -1;
+			}
+    	} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
     }
 	private int createAccount(String username, String hashedPass) {
 		//TODO create the account

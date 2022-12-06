@@ -16,7 +16,7 @@ public class ChatRoomCollectionTest {
     @BeforeAll
     public static void initChatRoomTable()
     {
-        DatabaseCredential credential = new DatabaseCredential(7359, "ChatroomDB", "postgres", "Ndsu#5973");
+        DatabaseCredential credential = new DatabaseCredential(5432, "ChatroomDB", "postgres", "postgres");
         chatRoomTable = new ChatRoomCollection(credential);
     }
 

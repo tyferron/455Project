@@ -1,6 +1,4 @@
 package csci455.project.chatroom.server;
-import java.sql.Connection;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,24 +11,13 @@ public class MapperTest
     @BeforeAll
     public static void loadCredentials()
     {
-        credential = new DatabaseCredential(7359, "ChatroomDB", 
-        "postgres", "Ndsu#5973");
+        credential = new DatabaseCredential(5432, "ChatroomDB", 
+        "postgres", "postgres");
     }
 
     @Test
-<<<<<<< HEAD
-    public void testGetNextId()
-    {
-        int expected = 3;
-        Connection connection = Mapper.getConnection(credential);
-        Assertions.assertNotNull(connection);
-        String tableName = "Users";
-        int actual = Mapper.getNextId(connection, tableName);
-        Assertions.assertEquals(expected, actual);
-=======
     public void testConnection()
     {
         Assertions.assertNotNull(Mapper.getConnection(credential));
->>>>>>> merge-zak-main-2p2
     }
 }

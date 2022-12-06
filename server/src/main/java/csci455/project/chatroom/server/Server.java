@@ -5,25 +5,24 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import csci455.project.chatroom.server.models.DatabaseCredential;
 
 public class Server 
 {
-	static Map<Integer, String> messageHistory = new HashMap<>();
+//	static Map<Integer, String> messageHistory = new HashMap<>();
     static int SERVER_PORT = 29000;
-    static Connection conn;
-    private static DatabaseCredential credential;
+    public static Connection conn;
+    static DatabaseCredential credential;
     public static void main(String[] args)
     {
     	boolean close=false;
     	try
         {
-    		credential = new DatabaseCredential(7359, "ChatroomDB", 
-    		        "postgres", "Ndsu#5973");
-    		Connection connection = Mapper.getConnection(credential);
+    		credential = new DatabaseCredential(5432, "ChatroomDB", 
+    		        "postgres", "postgres");
+    		conn = Mapper.getConnection(credential);
+    		conn.setAutoCommit(true);
             System.out.println("DB Connection Sucessfull.");
         }
         catch (Exception ex)
@@ -56,11 +55,11 @@ public class Server
                 }
                 if(close) {
                 	serverSocket.close();
-                	try {
-                		conn.close();
-                	} catch (SQLException e) {
-                		e.printStackTrace();
-                	}
+//                	try {
+//                		conn.close();
+//                	} catch (SQLException e) {
+//                		e.printStackTrace();
+//                	}
                 	break;
                 }
             }
