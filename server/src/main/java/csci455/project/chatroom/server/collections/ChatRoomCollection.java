@@ -8,17 +8,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
 {
     private final Connection connection;
+    private final Set<String> passwords;
+    private final Set<String> roomNames;
 
     public ChatRoomCollection(DatabaseCredential credential)
     {
         connection = Mapper.getConnection(credential);
+        passwords = new HashSet<String>();
+        roomNames = new HashSet<String>();
+        initUserNamesAndPasswords();
     }
 
     public void clear() 
@@ -29,6 +33,8 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
             statement.executeQuery();
             connection.commit();
             statement.close();
+            passwords.clear();
+            roomNames.clear();
         } catch (SQLException ex) {
             System.out.println("Unable to clear the records.");
             ex.printStackTrace();
@@ -76,7 +82,7 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
     }
 
     public Set<Map.Entry<Integer, ChatRoom>> entrySet() {
-        Set<Map.Entry<Integer, ChatRoom>> entries = new TreeSet<Map.Entry<Integer, ChatRoom>>(new RoomNameComparator());
+        Set<Map.Entry<Integer, ChatRoom>> entries = new HashSet<Map.Entry<Integer, ChatRoom>>();
         ResultSet table = Mapper.resultOf(connection, "SELECT * FROM \"ChatRoom\";");
         try {
             while (table.next()) {
@@ -112,7 +118,7 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
     }
 
     public Set<Integer> keySet() {
-        Set<Integer> keys = new TreeSet<Integer>();
+        Set<Integer> keys = new HashSet<Integer>();
         ResultSet table = Mapper.resultOf(connection, "SELECT * FROM public.\"ChatRoom\";");
         try {
             while (table.next()) {
@@ -127,6 +133,14 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
     }
 
     public ChatRoom put(Integer key, ChatRoom value) {
+        if (!roomNames.add(value.getRoomName()))
+        {
+            throw new IllegalArgumentException("The Room name has already been taken.");
+        }
+        else if (!passwords.add(value.getPassword()))
+        {
+            throw new IllegalArgumentException("The Passowrd has already been taken.");
+        }
         ChatRoom previous = get(key);
         try {
             String sql;
@@ -172,6 +186,8 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
                 statement.execute();
                 statement.close();
                 connection.commit();
+                roomNames.remove(previous.getRoomName());
+                passwords.remove(previous.getPassword());
             } 
             catch (SQLException ex) 
             {
@@ -193,18 +209,20 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
     }
 
     public Collection<ChatRoom> values() {
-        Collection<ChatRoom> users = new TreeSet<ChatRoom>();
+        Collection<ChatRoom> users = new HashSet<ChatRoom>();
         for (Map.Entry<Integer, ChatRoom> entry : entrySet()) {
             users.add(entry.getValue());
         }
         return users;
     }
 
-    private class RoomNameComparator implements Comparator<Map.Entry<Integer,ChatRoom>>
+    private void initUserNamesAndPasswords()
     {
-        public int compare(Map.Entry<Integer,ChatRoom> room1, Map.Entry<Integer,ChatRoom> room2)
+        Collection<ChatRoom> currentRooms = values();
+        for (ChatRoom room : currentRooms)
         {
-            return room1.getValue().compareTo(room2.getValue());
+            passwords.add(room.getPassword());
+            roomNames.add(room.getRoomName());
         }
     }
 }

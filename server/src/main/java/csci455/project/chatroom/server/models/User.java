@@ -1,7 +1,7 @@
 package csci455.project.chatroom.server.models;
 import java.util.Map;
 
-public class User implements Comparable<User>, Map.Entry<Integer, User> 
+public class User implements Map.Entry<Integer, User> 
 {
     private final int userId;
     private String userName;
@@ -12,11 +12,6 @@ public class User implements Comparable<User>, Map.Entry<Integer, User>
         this.userId = userId;
         this.userName = userName;
         this.password = password;
-    }
-
-    public int compareTo(User other)
-    {
-        return userName.compareTo(other.userName);
     }
    
     @Override

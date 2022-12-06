@@ -4,7 +4,7 @@ import java.util.Random;
 
 import csci455.project.chatroom.server.Mapper;
 
-public class ChatRoom implements Comparable<ChatRoom>, Map.Entry<Integer, ChatRoom>
+public class ChatRoom implements Map.Entry<Integer, ChatRoom>
 {
     private final int roomId;
     private String roomName;
@@ -17,11 +17,6 @@ public class ChatRoom implements Comparable<ChatRoom>, Map.Entry<Integer, ChatRo
         this.roomName = roomName;
         this.password = password;
         this.messageHistory = messageHistory;
-    }
-
-    public int compareTo(ChatRoom other)
-    {
-        return roomName.compareTo(other.roomName);
     }
 
     @Override

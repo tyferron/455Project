@@ -9,10 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class UserCollection implements Closeable, Map<Integer, User> {
     private final Connection connection;
@@ -75,7 +74,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
     }
 
     public Set<Map.Entry<Integer, User>> entrySet() {
-        Set<Map.Entry<Integer, User>> entries = new TreeSet<Map.Entry<Integer, User>>(new UserEntryComparator());
+        Set<Map.Entry<Integer, User>> entries = new HashSet<Map.Entry<Integer, User>>();
         ResultSet table = Mapper.resultOf(connection, "SELECT * FROM \"Users\";");
         try {
             while (table.next()) {
@@ -110,7 +109,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
     }
 
     public Set<Integer> keySet() {
-        Set<Integer> keys = new TreeSet<Integer>();
+        Set<Integer> keys = new HashSet<Integer>();
         ResultSet table = Mapper.resultOf(connection,"SELECT * FROM public.\"Users\";");
         try {
             while (table.next()) {
@@ -190,17 +189,11 @@ public class UserCollection implements Closeable, Map<Integer, User> {
     }
 
     public Collection<User> values() {
-        Collection<User> users = new TreeSet<User>();
+        Collection<User> users = new HashSet<User>();
         for (Map.Entry<Integer, User> entry : entrySet()) {
             users.add(entry.getValue());
         }
         return users;
-    }
-
-    private class UserEntryComparator implements Comparator<Map.Entry<Integer, User>> {
-        public int compare(Map.Entry<Integer, User> user1, Map.Entry<Integer, User> user2) {
-            return user1.getValue().compareTo(user2.getValue());
-        }
     }
 
 }
