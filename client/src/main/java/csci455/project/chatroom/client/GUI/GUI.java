@@ -44,12 +44,12 @@ public class GUI extends JFrame {
 	private int userID;
 
   
-//    NewChat log;
+    public NewChat createRoomWindow=null;
     public GUI() {
 //        log = new NewChat(this);
 //    	log.setVisible(true);
     	initComponents();
-        panel.setLayout(new MigLayout("fillx"));
+        messagesView.setLayout(new MigLayout("fillx"));
     }
 
 
@@ -64,10 +64,7 @@ public class GUI extends JFrame {
     public void setReceivedMessages(int roomID, List<String>msgs ) {
     	int i = 0;
     	if(Client.roomID==roomID) {
-    		i = panel.getComponentCount();
-    	} else {
-    		panel.removeAll();
-    	}
+		i = messagesView.getComponentCount();
     	while(i < msgs.size()) {
     		String message = msgs.get(i);
     		System.out.println(message);
@@ -81,12 +78,13 @@ public class GUI extends JFrame {
     		}
     		i++;
     	}
-    	panel.revalidate();
-    	int height = (int)panel.getPreferredSize().getHeight();
+    	messagesView.revalidate();
+    	int height = (int)messagesView.getPreferredSize().getHeight();
     	Rectangle rect = new Rectangle(0,height,10,10);
-    	panel.scrollRectToVisible(rect);
-        panel.repaint();
-        panel.revalidate();
+    	messagesView.scrollRectToVisible(rect);
+        messagesView.repaint();
+        messagesView.revalidate();
+    	}
     	//do what you want with the list of messages here
     }
     
@@ -153,13 +151,13 @@ public class GUI extends JFrame {
         jPanel1 = new JPanel();
         jScrollPane2 = new JScrollPane();
         txt = new JTextArea();
-        cmdLeft = new JButton();
+        sendMessageButton = new JButton();
         jScrollPane1 = new JScrollPane();
-        panel = new JPanel();
+        messagesView = new JPanel();
         jScrollPane3 = new JScrollPane();
         jPanel2 = new JPanel();
         jLabel1 = new JLabel();
-        jButton1 = new JButton();
+        createChatRoomButton = new JButton();
         jPanel4 = new JPanel();
         jLabel4 = new JLabel();
         jPanel3 = new JPanel();
@@ -179,8 +177,8 @@ public class GUI extends JFrame {
         txt.setRows(5);
         jScrollPane2.setViewportView(txt);
 
-        cmdLeft.setText("Send");
-        cmdLeft.addActionListener(new ActionListener() {
+        sendMessageButton.setText("Send");
+        sendMessageButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 cmdLeftActionPerformed(evt);
             }
@@ -188,11 +186,11 @@ public class GUI extends JFrame {
 
         jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        panel.setBackground(new Color(0, 0, 0));
-        panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, null, Color.darkGray, null, Color.gray));
+        messagesView.setBackground(new Color(0, 0, 0));
+        messagesView.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, null, Color.darkGray, null, Color.gray));
 
-        GroupLayout panelLayout = new GroupLayout(panel);
-        panel.setLayout(panelLayout);
+        GroupLayout panelLayout = new GroupLayout(messagesView);
+        messagesView.setLayout(panelLayout);
         
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -203,7 +201,7 @@ public class GUI extends JFrame {
             .addGap(0, 659, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(panel);
+        jScrollPane1.setViewportView(messagesView);
 
         jPanel2.setBackground(new Color(0, 102, 255));
         jPanel2.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, null, Color.gray, null, null));
@@ -211,11 +209,11 @@ public class GUI extends JFrame {
         jLabel1.setFont(new Font("Arial Black", 1, 14)); // NOI18N
         jLabel1.setText("Chats");
 
-        jButton1.setText("Create a new chat");
-        jButton1.setToolTipText("");
-        jButton1.addActionListener(new ActionListener() {
+        createChatRoomButton.setText("Create a new chat room");
+        createChatRoomButton.setToolTipText("");
+        createChatRoomButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                createChatroom(evt);
             }
         });
 
@@ -252,7 +250,7 @@ public class GUI extends JFrame {
                         .addGap(48, 48, 48)
                         .addComponent(jLabel1)
                         .addGap(72, 72, 72)
-                        .addComponent(jButton1))
+                        .addComponent(createChatRoomButton))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
@@ -263,7 +261,7 @@ public class GUI extends JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
+                    .addComponent(createChatRoomButton)
                     .addComponent(jLabel1))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -312,7 +310,7 @@ public class GUI extends JFrame {
                         .addGap(44, 44, 44)
                         .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 749, GroupLayout.PREFERRED_SIZE)
                         .addGap(36, 36, 36)
-                        .addComponent(cmdLeft, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE))
+                        .addComponent(sendMessageButton, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -341,7 +339,7 @@ public class GUI extends JFrame {
                                 .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(42, 42, 42)
-                                .addComponent(cmdLeft, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(sendMessageButton, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 657, GroupLayout.PREFERRED_SIZE)
@@ -383,17 +381,17 @@ public class GUI extends JFrame {
     
     private void logOwnMessage(String message) {
     	Item_Left item = new Item_Left(Client.username, message);
-        panel.add(item, "wrap, w 80%");
+        messagesView.add(item, "wrap, w 80%");
     }
     
     private void logOtherMessage(String user, String message) {
     	Item_Right item = new Item_Right(user, message);
-        panel.add(item, "wrap, w 80%");
+        messagesView.add(item, "wrap, w 80%");
     }
 
-    private void jButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-//        log.setVisible(true); // Main Form to show after the Login Form..
-    
+    private void createChatroom(ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        createRoomWindow = new NewChat(this);
+        createRoomWindow.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -432,8 +430,8 @@ public class GUI extends JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JButton cmdLeft;
-    private JButton jButton1;
+    private JButton sendMessageButton;
+    private JButton createChatRoomButton;
     private JLabel jLabel1;
     private JLabel jLabel2;
     private JLabel jLabel3;
@@ -445,7 +443,7 @@ public class GUI extends JFrame {
     private JScrollPane jScrollPane1;
     private JScrollPane jScrollPane2;
     private JScrollPane jScrollPane3;
-    private JPanel panel;
+    public JPanel messagesView;
     private JTextArea txt;
     // End of variables declaration//GEN-END:variables
 }

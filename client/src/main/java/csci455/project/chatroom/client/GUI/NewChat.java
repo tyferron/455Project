@@ -24,6 +24,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import csci455.project.chatroom.client.Client;
+
 /**
  *
  * @author Ryan liebsch
@@ -52,23 +54,26 @@ public class NewChat extends JFrame {
         jPanel1 = new JPanel();
         jPanel2 = new JPanel();
         jLabel1 = new JLabel();
-        jTextField1 = new JTextField();
-        jTextField3 = new JTextField();
+        roomPassword = new JTextField();
+        roomPassword.setBackground(Color.RED);
+        roomName = new JTextField();
+        roomName.setBackground(Color.GREEN);
         jLabel2 = new JLabel();
         jLabel4 = new JLabel();
-        jTextField2 = new JTextField();
+        confirmPassword = new JTextField();
+        confirmPassword.setBackground(Color.BLUE);
         jLabel3 = new JLabel();
-        jButton3 = new JButton();
-        jButton2 = new JButton();
+        submitButton = new JButton();
+        closeButton = new JButton();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel2.setBackground(new Color(0, 51, 102));
+        jPanel2.setBackground(new Color(100, 160, 200));
 
         jLabel1.setFont(new Font("sansserif", 0, 24)); // NOI18N
-        jLabel1.setText("ChatName:");
+        jLabel1.setText("Room Name:");
 
-        jTextField1.addActionListener(new ActionListener() {
+        roomPassword.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
             }
@@ -81,24 +86,24 @@ public class NewChat extends JFrame {
         jLabel4.setText("optional");
         jLabel4.setToolTipText("");
 
-        jTextField2.addActionListener(new ActionListener() {
+        confirmPassword.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 jTextField2ActionPerformed(evt);
             }
         });
 
         jLabel3.setFont(new Font("sansserif", 0, 24)); // NOI18N
-        jLabel3.setText("Chat Password");
+        jLabel3.setText("Room Password");
 
-        jButton3.setText("Create");
-        jButton3.addActionListener(new ActionListener() {
+        submitButton.setText("Create");
+        submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                createRoom(evt);
             }
         });
 
-        jButton2.setText("close");
-        jButton2.addActionListener(new ActionListener() {
+        closeButton.setText("close");
+        closeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
@@ -124,21 +129,21 @@ public class NewChat extends JFrame {
                                 .addGap(28, 28, 28)
                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(confirmPassword, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(jTextField3, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(roomName, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
                                         .addGap(49, 385, Short.MAX_VALUE))
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(roomPassword, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
                                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                             .addGroup(GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2)
+                                .addComponent(closeButton)
                                 .addGap(112, 112, 112))))))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(116, 116, 116)
-                .addComponent(jButton3)
+                .addComponent(submitButton)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
@@ -154,20 +159,20 @@ public class NewChat extends JFrame {
                         .addGap(46, 46, 46)
                         .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(jTextField3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(roomName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addComponent(jButton2)))
+                        .addComponent(closeButton)))
                 .addGap(36, 36, 36)
-                .addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(roomPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addGap(5, 5, 5)
                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(confirmPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(104, 104, 104)
-                .addComponent(jButton3)
+                .addComponent(submitButton)
                 .addContainerGap(133, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
@@ -224,8 +229,14 @@ public class NewChat extends JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
 
-    private void jButton3ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
+    private void createRoom(ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    	if(roomName.getText()==null||roomName.getText().trim().equals("")) {
+    		return; //TODO room name cannot be blank
+    	}
+    	if(roomPassword.getText()!=null&&(confirmPassword.getText()==null||!confirmPassword.getText().equals(roomPassword.getText()))) {
+    		return; //TODO password and confirm password must match
+    	}
+    	Client.createChatRoom(roomName.getText(), roomPassword.getText());
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -268,16 +279,16 @@ this.setVisible(false);    }//GEN-LAST:event_jButton2ActionPerformed
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JButton jButton2;
-    private JButton jButton3;
+    private JButton closeButton;
+    private JButton submitButton;
     private JLabel jLabel1;
     private JLabel jLabel2;
     private JLabel jLabel3;
     private JLabel jLabel4;
     private JPanel jPanel1;
     private JPanel jPanel2;
-    private JTextField jTextField1;
-    private JTextField jTextField2;
-    private JTextField jTextField3;
+    private JTextField roomPassword;
+    private JTextField confirmPassword;
+    private JTextField roomName;
     // End of variables declaration//GEN-END:variables
 }

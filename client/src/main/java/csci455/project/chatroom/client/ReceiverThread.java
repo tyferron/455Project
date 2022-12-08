@@ -55,6 +55,7 @@ public class ReceiverThread extends Thread {
     		break;
     	case "ROOMJOINED":
     		Client.gui.setJoinedRoom(response.get(2).equals("true"), Integer.parseInt(response.get(1)));
+    		Client.gui.messagesView.removeAll();
 //    		if(response.get(3).equals(true)) {
 //    			System.out.println("Room joined");
 //    		} else {
@@ -67,6 +68,13 @@ public class ReceiverThread extends Thread {
 //    		if(Client.roomID==Integer.parseInt(response.get(1))) {
 //    			System.out.println("Leaving room "+ Client.roomID );
 //    		}
+    		break;
+    	case "ROOMCREATED":
+    		Client.roomID=Integer.parseInt(response.get(1));
+    		Client.gui.messagesView.removeAll();
+    		Client.gui.createRoomWindow.dispose();
+    		Client.gui.createRoomWindow=null;
+    		Client.getMessages();
     		break;
     	case "LISTROOMS":
     		response.remove(0);

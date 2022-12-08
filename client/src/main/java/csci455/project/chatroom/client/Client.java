@@ -170,14 +170,14 @@ public class Client {
         
     }
 
-    public static void createChatRoom(int roomID, String password) {
+    public static void createChatRoom(String roomName, String password) {
 
     	
     	password = hashString(password);
     	
-    	System.out.println("Creating room: "+roomID);
+    	System.out.println("Creating room: "+roomName);
     	out.println("CREATEROOM");
-    	out.println(roomID);
+    	out.println(roomName);
         out.println(password);
         out.println("END");
         out.flush();

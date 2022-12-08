@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.UUID;
 
 import csci455.project.chatroom.server.collections.ChatRoomCollection;
 import csci455.project.chatroom.server.collections.UserCollection;
@@ -64,6 +65,7 @@ public class ClientConnection extends Thread {
                     // roomID
                     // history
             		// END
+            	System.out.println(request[1]);
                 for(String reqLine : getMessages(Integer.parseInt(request[1]))){
                     toClientWriter.println(reqLine);
                 }
@@ -161,15 +163,11 @@ public class ClientConnection extends Thread {
             		//password (or blank)
             		//END
             	//TOCLIENT:
-            		//RoomJoined return
-                toClientWriter.println("ROOMJOINED");
-                toClientWriter.println(request[1]);
-                toClientWriter.println(joinRoom(request[1], request[2]));
-                toClientWriter.println("END");
-            	toClientWriter.flush();
-            	for(String reqLine : getMessages(Integer.parseInt(request[1]))){
-                    toClientWriter.println(reqLine);
-                }
+	        		//ROOMCREATED
+	        		//roomID
+	        		//END
+                toClientWriter.println("ROOMCREATED");
+                toClientWriter.println(createRoom(request[1], request[2]));
                 toClientWriter.println("END");
             	toClientWriter.flush();
                 break;
@@ -225,7 +223,6 @@ public class ClientConnection extends Thread {
 
     private String[] getMessages(int roomID){
     	ChatRoomCollection roomTable = new ChatRoomCollection();
-    	System.out.println(roomID);
     	if(roomTable.get(roomID).getMessageHistory()==null||roomTable.get(roomID).getMessageHistory().trim().equals("")) {
     		return new String[] {"MESSAGESGOT", roomID+""};
     	}
@@ -285,6 +282,22 @@ public class ClientConnection extends Thread {
 			e.printStackTrace();
 			return -1;
 		}
+	}
+	private int createRoom(String roomName, String password) {
+		String tempID = UUID.randomUUID().toString();
+		System.out.println(tempID);
+		Mapper.execute(Server.getConn(), "INSERT INTO public.\"ChatRoom\" (\"RoomName\", \"Password\", \"MessageHistory\") VALUES('"+roomName+"', '"+password+"', '"+tempID+"');");
+		int id = -1;
+		try {
+			ResultSet res =Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"ChatRoom\" WHERE \"MessageHistory\" = '"+tempID+"';");
+			res.next();
+			id = res.getInt(1);
+			Mapper.execute(Server.getConn(), "UPDATE public.\"ChatRoom\" SET \"MessageHistory\" = '' WHERE \"MessageHistory\" = '"+tempID+"';");
+			Mapper.execute(Server.getConn(), "INSERT INTO public.\"UserToChatrooms\" (\"UserID\", \"RoomID\") VALUES("+userID+", "+id+");");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return id;
 	}
 	private boolean joinRoom(String roomID, String hashedPass) {
 		//TODO update user-room table
