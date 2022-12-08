@@ -1,9 +1,5 @@
 package csci455.project.chatroom.server.collections;
-import csci455.project.chatroom.server.Mapper;
-import csci455.project.chatroom.server.models.DatabaseCredential;
-import csci455.project.chatroom.server.models.User;
 import java.io.Closeable;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,19 +8,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class UserCollection implements Closeable, Map<Integer, User> {
-    private final Connection connection;
+import csci455.project.chatroom.server.Mapper;
+import csci455.project.chatroom.server.Server;
+import csci455.project.chatroom.server.models.User;
 
-    public UserCollection(DatabaseCredential credential) {
-        connection = Mapper.getConnection(credential);
-    }
+public class UserCollection implements Closeable, Map<Integer, User> {
+    
+    public UserCollection() { }
 
     public void clear() {
         String sql = "DELETE FROM public.\"Users\";";
         try {
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = Server.getConn().prepareStatement(sql);
             statement.executeQuery();
-            connection.commit();
+            Server.getConn().commit();
             statement.close();
         } catch (SQLException ex) {
             System.out.println("Unable to clear the records.");
@@ -34,7 +31,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
 
     public void close() {
         try {
-            connection.close();
+            Server.getConn().close();
         } catch (SQLException ex) {
             System.out.println("Unable to close the collection.");
             ex.printStackTrace();
@@ -46,7 +43,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
             return false;
         }
         Integer id = (Integer) key;
-        ResultSet result = Mapper.resultOf(connection, "SELECT * FROM public.\"Users\" WHERE \"UserID\" = " + id + ";");
+        ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"Users\" WHERE \"UserID\" = " + id + ";");
         try {
             return result.next();
         } catch (SQLException ex) {
@@ -59,7 +56,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
     public boolean containsValue(Object value) {
         if (value instanceof User) {
             User user = (User) value;
-            ResultSet table = Mapper.resultOf(connection, "SELECT * FROM public.\"Users\" WHERE " +
+            ResultSet table = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"Users\" WHERE " +
                     "\"UserName\" = '" + user.getUserName() + "' AND \"Password\" = '" + user.getPassword() +
                     "';");
             try {
@@ -74,7 +71,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
 
     public Set<Map.Entry<Integer, User>> entrySet() {
         Set<Map.Entry<Integer, User>> entries = new HashSet<Map.Entry<Integer, User>>();
-        ResultSet table = Mapper.resultOf(connection, "SELECT * FROM \"Users\";");
+        ResultSet table = Mapper.resultOf(Server.getConn(), "SELECT * FROM \"Users\";");
         try {
             while (table.next()) {
                 User current = new User(table.getInt(1), table.getString(2),
@@ -92,7 +89,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
     public User get(Object key) {
         if (key instanceof Integer) {
             Integer id = (Integer) key;
-            ResultSet table = Mapper.resultOf(connection, "SELECT * FROM public.\"Users\" WHERE \"UserID\" = " + id + ";");
+            ResultSet table = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"Users\" WHERE \"UserID\" = " + id + ";");
             try {
                 return table.next() ? new User(table.getInt(1), table.getString(2), table.getString(3)) : null;
             } catch (SQLException ex) {
@@ -109,7 +106,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
 
     public Set<Integer> keySet() {
         Set<Integer> keys = new HashSet<Integer>();
-        ResultSet table = Mapper.resultOf(connection,"SELECT * FROM public.\"Users\";");
+        ResultSet table = Mapper.resultOf(Server.getConn(),"SELECT * FROM public.\"Users\";");
         try {
             while (table.next()) {
                 keys.add(table.getInt(1));
@@ -130,18 +127,18 @@ public class UserCollection implements Closeable, Map<Integer, User> {
             {
                 sql = "INSERT INTO public.\"Users\" (\"UserName\", \"Password\") VALUES ('" +
                         value.getUserName() + "', '" + value.getPassword() + "');";
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = Server.getConn().prepareStatement(sql);
                 statement.executeQuery();
                 statement.close();
-                connection.commit();
+                Server.getConn().commit();
             } else // Update case
             {
                 sql = "UPDATE public.\"Users\" SET \"UserName\" = '" + value.getUserName() + "', " +
                         "\"Password\" = '" + value.getPassword() + "' WHERE \"UserID\" = " + key + ";";
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = Server.getConn().prepareStatement(sql);
                 statement.executeQuery();
                 statement.close();
-                connection.commit();
+                Server.getConn().commit();
             }
         } catch (SQLException ex) {
             System.out.println("Unable to apply the value in table.");
@@ -163,10 +160,10 @@ public class UserCollection implements Closeable, Map<Integer, User> {
             String sql = "DELETE FROM public.\"Users\" WHERE \"UserID\" = " + previous.getKey() + ";";
             try 
             {
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = Server.getConn().prepareStatement(sql);
                 statement.execute();
                 statement.close();
-                connection.commit();
+                Server.getConn().commit();
             } 
             catch (SQLException ex) 
             {
@@ -178,7 +175,7 @@ public class UserCollection implements Closeable, Map<Integer, User> {
     }
 
     public int size() {
-        ResultSet result = Mapper.resultOf(connection, "SELECT COUNT(\"UserID\") FROM public.\"Users\";");
+        ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT COUNT(\"UserID\") FROM public.\"Users\";");
         try {
             return result.next() ? result.getInt(1) : 0;
         } catch (SQLException ex) {

@@ -94,7 +94,7 @@ public class ClientConnection extends Thread {
             	toClientWriter.println("LOGIN");
             	userID=testLogin(request[1], request[2]);
             	if(userID>0) {
-            		toClientWriter.println(new UserCollection(Server.credential).get(userID).getUserName());
+            		toClientWriter.println(new UserCollection().get(userID).getUserName());
             	} else {
             		toClientWriter.println();
             	}
@@ -113,7 +113,7 @@ public class ClientConnection extends Thread {
             	toClientWriter.println("CREATEACCOUNT");
             	userID=createAccount(request[1], request[2]);
             	if(userID>0) {
-            		toClientWriter.println(new UserCollection(Server.credential).get(userID).getUserName());
+            		toClientWriter.println(new UserCollection().get(userID).getUserName());
             	} else {
             		toClientWriter.println();
             	}
@@ -224,7 +224,7 @@ public class ClientConnection extends Thread {
     }
 
     private String[] getMessages(int roomID){
-    	ChatRoomCollection roomTable = new ChatRoomCollection(Server.credential);
+    	ChatRoomCollection roomTable = new ChatRoomCollection();
     	System.out.println(roomID);
     	if(roomTable.get(roomID).getMessageHistory()==null||roomTable.get(roomID).getMessageHistory().trim().equals("")) {
     		return new String[] {"MESSAGESGOT", roomID+""};

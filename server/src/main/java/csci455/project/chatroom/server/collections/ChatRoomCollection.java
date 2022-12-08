@@ -1,9 +1,4 @@
 package csci455.project.chatroom.server.collections;
-import csci455.project.chatroom.server.Mapper;
-import csci455.project.chatroom.server.models.ChatRoom;
-import csci455.project.chatroom.server.models.DatabaseCredential;
-import java.io.Closeable;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,15 +6,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
+
+import csci455.project.chatroom.server.Mapper;
+import csci455.project.chatroom.server.Server;
+import csci455.project.chatroom.server.models.ChatRoom;
+public class ChatRoomCollection implements Map<Integer,ChatRoom>
 {
-    private final Connection connection;
     private final Set<String> passwords;
     private final Set<String> roomNames;
 
-    public ChatRoomCollection(DatabaseCredential credential)
+    public ChatRoomCollection()
     {
-        connection = Mapper.getConnection(credential);
         passwords = new HashSet<String>();
         roomNames = new HashSet<String>();
         initUserNamesAndPasswords();
@@ -29,9 +26,9 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
     {
         String sql = "DELETE FROM public.\"ChatRoom\";";
         try {
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = Server.getConn().prepareStatement(sql);
             statement.executeQuery();
-            connection.commit();
+            Server.getConn().commit();
             statement.close();
             passwords.clear();
             roomNames.clear();
@@ -41,21 +38,12 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
         }
     }
 
-    public void close() {
-        try {
-            connection.close();
-        } catch (SQLException ex) {
-            System.out.println("Unable to close the collection.");
-            ex.printStackTrace();
-        }
-    }
-
     public boolean containsKey(Object key) {
         if (!(key instanceof Integer)) {
             return false;
         }
         Integer id = (Integer) key;
-        ResultSet result = Mapper.resultOf(connection, "SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + id + ";");
+        ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + id + ";");
         try {
             return result.next();
         } catch (SQLException ex) {
@@ -68,7 +56,7 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
     public boolean containsValue(Object value) {
         if (value instanceof ChatRoom) {
             ChatRoom room = (ChatRoom) value;
-            ResultSet table = Mapper.resultOf(connection, "SELECT * FROM public.\"ChatRoom\" WHERE " +
+            ResultSet table = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"ChatRoom\" WHERE " +
                     "\"RoomName\" = '" + room.getRoomName() + "' AND \"Password\" = '" + room.getPassword()
                     + "' AND \"MessageHistory\" = '" + room.getMessageHistory() + "';");
             try {
@@ -83,7 +71,7 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
 
     public Set<Map.Entry<Integer, ChatRoom>> entrySet() {
         Set<Map.Entry<Integer, ChatRoom>> entries = new HashSet<Map.Entry<Integer, ChatRoom>>();
-        ResultSet table = Mapper.resultOf(connection, "SELECT * FROM \"ChatRoom\";");
+        ResultSet table = Mapper.resultOf(Server.getConn(), "SELECT * FROM \"ChatRoom\";");
         try {
             while (table.next()) {
                 ChatRoom current = new ChatRoom(table.getInt(1), table.getString(2),
@@ -101,7 +89,7 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
     public ChatRoom get(Object key) {
         if (key instanceof Integer) {
             Integer id = (Integer) key;
-            ResultSet table = Mapper.resultOf(connection,"SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + id + ";");
+            ResultSet table = Mapper.resultOf(Server.getConn(),"SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + id + ";");
             try {
                 return table.next() ? new ChatRoom(table.getInt(1), table.getString(2),
                  table.getString(3), table.getString(4)) : null;
@@ -119,7 +107,7 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
 
     public Set<Integer> keySet() {
         Set<Integer> keys = new HashSet<Integer>();
-        ResultSet table = Mapper.resultOf(connection, "SELECT * FROM public.\"ChatRoom\";");
+        ResultSet table = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"ChatRoom\";");
         try {
             while (table.next()) {
                 keys.add(table.getInt(1));
@@ -148,19 +136,19 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
             {
                 sql = "INSERT INTO public.\"ChatRoom\" (\"RoomName\", \"Password\", \"MessageHistory\") VALUES ('" +
                         value.getRoomName() + "', '" + value.getPassword() + "', '" + value.getMessageHistory() + "');";
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = Server.getConn().prepareStatement(sql);
                 statement.executeQuery();
                 statement.close();
-                connection.commit();
+                Server.getConn().commit();
             } else // Update case
             {
                 sql = "UPDATE public.\"ChatRoom\" SET \"RoomName\" = '" + value.getRoomName() + "', " +
                         "\"Password\" = '" + value.getPassword() + "', \"MessageHistory\" = '" + value.getMessageHistory() + 
                         "' WHERE \"RoomID\" = " + key + ";";
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = Server.getConn().prepareStatement(sql);
                 statement.executeQuery();
                 statement.close();
-                connection.commit();
+                Server.getConn().commit();
             }
         } catch (SQLException ex) {
             System.out.println("Unable to apply the value in table.");
@@ -182,10 +170,10 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
             String sql = "DELETE FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + previous.getKey() + ";";
             try 
             {
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = Server.getConn().prepareStatement(sql);
                 statement.execute();
                 statement.close();
-                connection.commit();
+                Server.getConn().commit();
                 roomNames.remove(previous.getRoomName());
                 passwords.remove(previous.getPassword());
             } 
@@ -199,7 +187,7 @@ public class ChatRoomCollection implements Closeable, Map<Integer,ChatRoom>
     }
 
     public int size() {
-        ResultSet result = Mapper.resultOf(connection, "SELECT COUNT(\"RoomID\") FROM public.\"ChatRoom\";");
+        ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT COUNT(\"RoomID\") FROM public.\"ChatRoom\";");
         try {
             return result.next() ? result.getInt(1) : 0;
         } catch (SQLException ex) {

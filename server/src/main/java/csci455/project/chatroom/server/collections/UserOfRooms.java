@@ -1,8 +1,5 @@
 package csci455.project.chatroom.server.collections;
-import csci455.project.chatroom.server.Mapper;
-import csci455.project.chatroom.server.models.*;
 import java.io.Closeable;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -11,13 +8,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import csci455.project.chatroom.server.Mapper;
+import csci455.project.chatroom.server.Server;
+import csci455.project.chatroom.server.models.ChatRoom;
 public class UserOfRooms implements Closeable, Set<ChatRoom> {
-    private final Connection connection;
     private final int userID;
 
-    public UserOfRooms(DatabaseCredential credential, int userID)
+    public UserOfRooms(int userID)
     {
-        connection = Mapper.getConnection(credential);
         this.userID = userID; 
     }
 
@@ -29,7 +28,7 @@ public class UserOfRooms implements Closeable, Set<ChatRoom> {
         }
         String sql = "INSERT INTO public.\"UserToChatrooms\" (\"UserID\",\"RoomID\") " + 
         "VALUES (" + userID + ", " + room.getKey() + ");";
-        Mapper.resultOf(connection, sql);
+        Mapper.resultOf(Server.getConn(), sql);
         return true;
     }
 
@@ -48,18 +47,18 @@ public class UserOfRooms implements Closeable, Set<ChatRoom> {
     public void clear()
     {
         String sql = "DELETE FROM public.\"UserToChatrooms\" WHERE \"UserID\" = " + userID + ";";
-        Mapper.resultOf(connection, sql);
+        Mapper.resultOf(Server.getConn(), sql);
     }
 
     public void close()
     {
         try
         {
-            connection.close();
+            Server.getConn().close();
         }
         catch (SQLException ex)
         {
-            System.out.println("Unable to closed connection.");
+            System.out.println("Unable to closed Server.getConn().");
             ex.printStackTrace();
         }
     }
@@ -75,7 +74,7 @@ public class UserOfRooms implements Closeable, Set<ChatRoom> {
             " AND \"RoomID\" = " + room.getKey() + ";";
         try
         {
-            ResultSet rs = Mapper.resultOf(connection, sql);
+            ResultSet rs = Mapper.resultOf(Server.getConn(), sql);
             return rs.next();
         }
         catch (SQLException ex)
@@ -104,7 +103,7 @@ public class UserOfRooms implements Closeable, Set<ChatRoom> {
     public Iterator<ChatRoom> iterator()
     {
         String sql = "SELECT * FROM \"UserToChatrooms\" WHERE \"UserID = " + userID + ";";
-        return new ChatRoomIterator(Mapper.resultOf(connection, sql));
+        return new ChatRoomIterator(Mapper.resultOf(Server.getConn(), sql));
     }
 
     public boolean remove(Object o)
@@ -116,7 +115,7 @@ public class UserOfRooms implements Closeable, Set<ChatRoom> {
         ChatRoom room = (ChatRoom)o;
         String sql = "DELETE FROM public.\"UserToChatrooms\" WHERE \"UserID\" = " + userID + 
         " AND \"RoomID\" = " + room.getKey() + ";";
-        Mapper.resultOf(connection, sql);
+        Mapper.resultOf(Server.getConn(), sql);
         return true;
     }
 
@@ -150,7 +149,7 @@ public class UserOfRooms implements Closeable, Set<ChatRoom> {
         String sql = "SELECT COUNT(\"RoomID\") FROM public.\"UserToChatrooms\";";
         try
         {
-            return Mapper.resultOf(connection, sql).getInt(1);
+            return Mapper.resultOf(Server.getConn(), sql).getInt(1);
         }
         catch (SQLException ex)
         {
