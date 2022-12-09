@@ -30,7 +30,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 
 import csci455.project.chatroom.client.Client;
 import net.miginfocom.swing.MigLayout;
@@ -51,6 +50,7 @@ public class GUI extends JFrame {
 //    	log.setVisible(true);
     	initComponents();
         messagesView.setLayout(new MigLayout("fillx"));
+        chatRoomListPanel.setLayout(new MigLayout("fillx"));
     }
 
 
@@ -236,20 +236,20 @@ public class GUI extends JFrame {
         		jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 500, Short.MAX_VALUE)
         );
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 254, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addContainerGap(507, Short.MAX_VALUE))
-        );
+//        jPanel4Layout.setHorizontalGroup(
+//            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//            .addGroup(jPanel4Layout.createSequentialGroup()
+//                .addGap(21, 21, 21)
+//                .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 254, GroupLayout.PREFERRED_SIZE)
+//                .addContainerGap(23, Short.MAX_VALUE))
+//        );
+//        jPanel4Layout.setVerticalGroup(
+//            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//            .addGroup(jPanel4Layout.createSequentialGroup()
+//                .addGap(18, 18, 18)
+//                .addComponent(jLabel4)
+//                .addContainerGap(507, Short.MAX_VALUE))
+//        );
         JButton chatRoomOptionButton = new JButton();
         chatRoomOptionButton.setText("I'm a room");
         chatRoomListPanel.add(chatRoomOptionButton, "wrap, w 80%");
