@@ -71,6 +71,8 @@ public class ReceiverThread extends Thread {
     		break;
     	case "ROOMCREATED":
     		Client.roomID=Integer.parseInt(response.get(1));
+
+            Client.gui.chatroomLabel.setText("Chatroom: "+Client.roomID);
     		Client.gui.messagesView.removeAll();
     		Client.gui.createRoomWindow.dispose();
     		Client.gui.createRoomWindow=null;

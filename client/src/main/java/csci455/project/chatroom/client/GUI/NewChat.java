@@ -55,13 +55,10 @@ public class NewChat extends JFrame {
         jPanel2 = new JPanel();
         jLabel1 = new JLabel();
         roomPassword = new JTextField();
-        roomPassword.setBackground(Color.RED);
         roomName = new JTextField();
-        roomName.setBackground(Color.GREEN);
         jLabel2 = new JLabel();
         jLabel4 = new JLabel();
         confirmPassword = new JTextField();
-        confirmPassword.setBackground(Color.BLUE);
         jLabel3 = new JLabel();
         submitButton = new JButton();
         closeButton = new JButton();

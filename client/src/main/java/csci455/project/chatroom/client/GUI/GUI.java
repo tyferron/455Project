@@ -162,7 +162,7 @@ public class GUI extends JFrame {
         chatRoomListPanel = new JPanel();
         jLabel4 = new JLabel();
         jPanel3 = new JPanel();
-        jLabel2 = new JLabel();
+        chatroomLabel = new JLabel();
         jLabel3 = new JLabel();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -289,10 +289,10 @@ public class GUI extends JFrame {
         jPanel3.setBackground(new Color(0, 102, 255));
         jPanel3.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 5));
 
-        jLabel2.setFont(new Font("sansserif", 0, 24)); // NOI18N
-        jLabel2.setText("Chatroom: "+Client.roomID);
-        jLabel2.setForeground(new Color(222, 222, 222));
-        jLabel2.setBorder(BorderFactory.createEmptyBorder());
+        chatroomLabel.setFont(new Font("sansserif", 0, 24)); // NOI18N
+        chatroomLabel.setText("Chatroom: "+Client.roomID);
+        chatroomLabel.setForeground(new Color(222, 222, 222));
+        chatroomLabel.setBorder(BorderFactory.createEmptyBorder());
 
         GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -300,14 +300,14 @@ public class GUI extends JFrame {
             jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, GroupLayout.PREFERRED_SIZE, 443, GroupLayout.PREFERRED_SIZE)
+                .addComponent(chatroomLabel, GroupLayout.PREFERRED_SIZE, 443, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(486, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
+                .addComponent(chatroomLabel, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -451,7 +451,7 @@ public class GUI extends JFrame {
     private JButton sendMessageButton;
     private JButton createChatRoomButton;
     private JLabel jLabel1;
-    private JLabel jLabel2;
+    public JLabel chatroomLabel;
     private JLabel jLabel3;
     private JLabel jLabel4;
     private JPanel jPanel1;
