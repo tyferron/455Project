@@ -65,7 +65,6 @@ public class ClientConnection extends Thread {
                     // roomID
                     // history
             		// END
-            	System.out.println(request[1]);
                 for(String reqLine : getMessages(Integer.parseInt(request[1]))){
                     toClientWriter.println(reqLine);
                 }

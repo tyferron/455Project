@@ -54,7 +54,7 @@ public class Client {
             	
 
             	while(username.equals("")) {
-            		System.out.println(username);
+            		Thread.sleep(1); //TODO this is bad. The following code should be its own thread which is set to wait until notified. And then notified when username is set.
             		continue;
             	}
             	for(JFrame j : loginWindows) { j.dispose(); }

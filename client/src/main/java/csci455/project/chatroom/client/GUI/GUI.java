@@ -30,6 +30,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 
 import csci455.project.chatroom.client.Client;
 import net.miginfocom.swing.MigLayout;
@@ -158,7 +159,7 @@ public class GUI extends JFrame {
         jPanel2 = new JPanel();
         jLabel1 = new JLabel();
         createChatRoomButton = new JButton();
-        jPanel4 = new JPanel();
+        chatRoomListPanel = new JPanel();
         jLabel4 = new JLabel();
         jPanel3 = new JPanel();
         jLabel2 = new JLabel();
@@ -217,28 +218,42 @@ public class GUI extends JFrame {
             }
         });
 
-        jPanel4.setBackground(new Color(0, 102, 255));
-        jPanel4.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+        chatRoomListPanel.setBackground(new Color(0, 102, 255));
+        chatRoomListPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
         jLabel4.setFont(new Font("sansserif", 0, 18)); // NOI18N
         jLabel4.setText("Joe");
 
-        GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
+        GroupLayout jPanel4Layout = new GroupLayout(chatRoomListPanel);
+        chatRoomListPanel.setLayout(jPanel4Layout);
+
         jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 254, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+        		jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addContainerGap(507, Short.MAX_VALUE))
+        		jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
         );
+//        jPanel4Layout.setHorizontalGroup(
+//            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//            .addGroup(jPanel4Layout.createSequentialGroup()
+//                .addGap(21, 21, 21)
+//                .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 254, GroupLayout.PREFERRED_SIZE)
+//                .addContainerGap(23, Short.MAX_VALUE))
+//        );
+//        jPanel4Layout.setVerticalGroup(
+//            jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//            .addGroup(jPanel4Layout.createSequentialGroup()
+//                .addGap(18, 18, 18)
+//                .addComponent(jLabel4)
+//                .addContainerGap(507, Short.MAX_VALUE))
+//        );
+        JButton chatRoomOptionButton = new JButton();
+        chatRoomOptionButton.setText("I'm a room");
+        chatRoomListPanel.add(chatRoomOptionButton, "wrap, w 80%");
+        chatRoomListPanel.repaint();
+        chatRoomListPanel.revalidate();
 
         GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -253,7 +268,7 @@ public class GUI extends JFrame {
                         .addComponent(createChatRoomButton))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
-                        .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(chatRoomListPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(103, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -264,7 +279,7 @@ public class GUI extends JFrame {
                     .addComponent(createChatRoomButton)
                     .addComponent(jLabel1))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(chatRoomListPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(375, Short.MAX_VALUE))
         );
 
@@ -274,8 +289,9 @@ public class GUI extends JFrame {
         jPanel3.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 5));
 
         jLabel2.setFont(new Font("sansserif", 0, 24)); // NOI18N
-        jLabel2.setText("You're  now chatting with");
-        jLabel2.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+        jLabel2.setText("Chatroom: "+Client.roomID);
+        jLabel2.setForeground(new Color(222, 222, 222));
+        jLabel2.setBorder(BorderFactory.createEmptyBorder());
 
         GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -295,8 +311,9 @@ public class GUI extends JFrame {
         );
 
         jLabel3.setFont(new Font("sansserif", 0, 24)); // NOI18N
-        jLabel3.setText("Welcome the the Chat Project");
-        jLabel3.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+        jLabel3.setText("TechnoColor Chat");
+        jLabel3.setForeground(new Color(222, 222, 222));
+        jLabel3.setBorder(BorderFactory.createEmptyBorder());
 
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -439,7 +456,7 @@ public class GUI extends JFrame {
     private JPanel jPanel1;
     private JPanel jPanel2;
     private JPanel jPanel3;
-    private JPanel jPanel4;
+    private JPanel chatRoomListPanel;
     private JScrollPane jScrollPane1;
     private JScrollPane jScrollPane2;
     private JScrollPane jScrollPane3;
