@@ -13,10 +13,14 @@ public class Server
 //	static Map<Integer, String> messageHistory = new HashMap<>();
     static int SERVER_PORT = 29001;
     private static Connection conn;
+    static private int DBPort=5432;
+    static private String DBName="ChatroomDB";
+    static private String DBUser="postgres";
+    static private String DBPass="postgres";
     public static Connection getConn() {
     	if(conn==null) {
-    		credential = new DatabaseCredential(5432, "ChatroomDB", 
-    		        "postgres", "postgres");
+    		credential = new DatabaseCredential(DBPort, DBName, 
+    				DBUser, DBPass);
     		conn = Mapper.getConnection(credential);
     		try {
 				conn.setAutoCommit(true);
@@ -43,7 +47,13 @@ public class Server
         		catch (SQLException e) { e.printStackTrace(); }
         	}
         });
-    	try{
+    	try {
+	        DBPort=Integer.parseInt(args[1]);
+	        DBName=args[2];
+	        DBUser=args[3];
+	        DBPass=args[4];
+    	} catch(Exception e) { /* Use default arguments */ }
+        try{
         	SERVER_PORT=Integer.parseInt(args[0]);
             serverSocket = new ServerSocket(SERVER_PORT);
             System.out.println("Opening server on port: "+SERVER_PORT);
