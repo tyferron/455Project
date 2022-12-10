@@ -28,12 +28,24 @@ public class Server
     	return conn;
     }
     static DatabaseCredential credential;
+    static ServerSocket serverSocket;
+    
+    
     public static void main(String[] args)
     {
-    	boolean close=false;
-        try{
+    	Runtime.getRuntime().addShutdownHook(new Thread()
+        {
+        	@Override public void run() {
+        		try { serverSocket.close(); }
+        		catch (IOException e) { e.printStackTrace(); }
+        		
+        		try { conn.close(); }
+        		catch (SQLException e) { e.printStackTrace(); }
+        	}
+        });
+    	try{
         	SERVER_PORT=Integer.parseInt(args[0]);
-            ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
+            serverSocket = new ServerSocket(SERVER_PORT);
             System.out.println("Opening server on port: "+SERVER_PORT);
             while(true){
                 try {
@@ -43,15 +55,6 @@ public class Server
                 } catch(Exception e){
                     System.err.println("Error while establishing a new client connection");
                     e.printStackTrace();
-                }
-                if(close) {
-                	serverSocket.close();
-//                	try {
-//                		conn.close();
-//                	} catch (SQLException e) {
-//                		e.printStackTrace();
-//                	}
-                	break;
                 }
             }
         } catch(IOException e){

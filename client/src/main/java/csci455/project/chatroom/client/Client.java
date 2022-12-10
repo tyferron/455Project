@@ -33,10 +33,19 @@ public class Client {
     	username = login.getUsername();
 //    	gui=new GUI();
 //    	gui.run();
-    	boolean close=false;
         try {
         	SERVER_PORT=Integer.parseInt(args[1]);
             Socket clientSocket = new Socket(args[0], SERVER_PORT); //loop address
+
+        	Runtime.getRuntime().addShutdownHook(new Thread()
+            {
+            	@Override public void run() {
+            		try { clientSocket.close(); }
+            		catch (IOException e) { e.printStackTrace(); }
+            	}
+            });
+        	
+        	
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             try {
@@ -82,9 +91,6 @@ public class Client {
                 messageGetterThread.start();
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            if(close) {
-            	clientSocket.close();
             }
         } catch (IOException e){
             e.printStackTrace();
