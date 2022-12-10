@@ -21,7 +21,7 @@ public class Client {
     static BufferedReader in;
     static PrintWriter out;
     public static int roomID = 1234; //ID of current room
-    static int SERVER_PORT = 29000;
+    static int SERVER_PORT = 29001;
     final static Scanner sc = new Scanner(System.in);
     static GUI gui;
     public static String username="Nick";

@@ -11,7 +11,7 @@ import csci455.project.chatroom.server.models.DatabaseCredential;
 public class Server 
 {
 //	static Map<Integer, String> messageHistory = new HashMap<>();
-    static int SERVER_PORT = 29000;
+    static int SERVER_PORT = 29001;
     private static Connection conn;
     public static Connection getConn() {
     	if(conn==null) {
