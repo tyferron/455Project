@@ -32,6 +32,7 @@ public class Server
     {
     	boolean close=false;
         try{
+        	SERVER_PORT=Integer.parseInt(args[0]);
             ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
             System.out.println("Opening server on port: "+SERVER_PORT);
             while(true){

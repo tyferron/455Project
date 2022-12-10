@@ -35,6 +35,7 @@ public class Client {
 //    	gui.run();
     	boolean close=false;
         try {
+        	SERVER_PORT=Integer.parseInt(args[1]);
             Socket clientSocket = new Socket(args[0], SERVER_PORT); //loop address
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
