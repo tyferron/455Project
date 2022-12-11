@@ -41,7 +41,7 @@ public class Client {
             {
             	@Override public void run() {
             		try { clientSocket.close(); }
-            		catch (IOException e) { e.printStackTrace(); }
+            		catch (IOException e) { /* Just cleaning up */ }
             	}
             });
         	

@@ -66,6 +66,7 @@ public class GUI extends JFrame {
     	int i = 0;
     	if(Client.roomID==roomID) {
 		i = messagesView.getComponentCount();
+		int update = i;
     	while(i < msgs.size()) {
     		String message = msgs.get(i);
     		System.out.println(message);
@@ -79,10 +80,12 @@ public class GUI extends JFrame {
     		}
     		i++;
     	}
-    	messagesView.revalidate();
-    	int height = (int)messagesView.getPreferredSize().getHeight();
-    	Rectangle rect = new Rectangle(0,height,10,10);
-    	messagesView.scrollRectToVisible(rect);
+    	if(update!=i) {
+    		messagesView.revalidate();
+	    	int height = (int)messagesView.getPreferredSize().getHeight();
+	    	Rectangle rect = new Rectangle(0,height,10,10);
+	    	messagesView.scrollRectToVisible(rect);
+    	}
         messagesView.repaint();
         messagesView.revalidate();
     	}
