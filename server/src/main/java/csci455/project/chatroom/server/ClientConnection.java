@@ -236,6 +236,7 @@ public class ClientConnection extends Thread {
     }
 
     private String[] sendMessage(int roomID, String message){
+    	message=message.replace("'", "''");
     	ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"ChatRoom\" WHERE \"RoomID\" = " + roomID + ";");
     	try {
 			ChatRoom room = result.next() ? new ChatRoom(result.getInt(1), result.getString(2), result.getString(3), result.getString(4)) : null;
@@ -251,6 +252,7 @@ public class ClientConnection extends Thread {
     }
     
     private int testLogin(String username, String hashedPass) {
+    	username=username.replace("'", "''");
     	ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"Users\" WHERE \"UserName\" = '" + username + "';");
     	try {
 			User user = result.next() ? new User(result.getInt(1), result.getString(2), result.getString(3)) : null;
@@ -268,6 +270,7 @@ public class ClientConnection extends Thread {
 		}
     }
 	private int createAccount(String username, String hashedPass) {
+    	username=username.replace("'", "''");
 		ResultSet result = Mapper.resultOf(Server.getConn(), "SELECT * FROM public.\"Users\" WHERE \"UserName\" = '" + username + "';");
 		try {
 			User user = result.next() ? new User(result.getInt(1), result.getString(2), result.getString(3)) : null;
@@ -283,6 +286,7 @@ public class ClientConnection extends Thread {
 		}
 	}
 	private int createRoom(String roomName, String password) {
+    	roomName=roomName.replace("'", "''");
 		String tempID = UUID.randomUUID().toString();
 		System.out.println(tempID);
 		Mapper.execute(Server.getConn(), "INSERT INTO public.\"ChatRoom\" (\"RoomName\", \"Password\", \"MessageHistory\") VALUES('"+roomName+"', '"+password+"', '"+tempID+"');");

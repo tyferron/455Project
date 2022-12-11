@@ -55,10 +55,12 @@ public class Mapper {
     
     public static boolean execute(Connection connection, String sql) {
     	try {
+//    		String sql2=sql.replace("'", "''");
+//    		System.out.println(sql2);
             PreparedStatement statement = connection.prepareStatement(sql);
+            System.out.println(statement);
             return statement.execute();
         } catch (SQLException ex) {
-        	System.err.println(sql);
         	ex.printStackTrace();
             return false;
         }
