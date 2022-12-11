@@ -8,24 +8,44 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.JFrame;
+
 import csci455.project.chatroom.client.GUI.GUI;
+import csci455.project.chatroom.client.GUI.Login;
 
 public class Client {
     static BufferedReader in;
     static PrintWriter out;
-    static int roomID = 1234; //ID of current room
-    static int SERVER_PORT = 29000;
+    public static int roomID = 1234; //ID of current room
+    static int SERVER_PORT = 29001;
     final static Scanner sc = new Scanner(System.in);
     static GUI gui;
+    public static String username="Nick";
+    public static List<JFrame> loginWindows = new ArrayList<>();
     public static void main(String[] args) {
-    	gui=new GUI();
-    	gui.run();
-    	boolean close=false;
+
+    	Login login = new Login();
+    	loginWindows.add(login);
+    	username = login.getUsername();
+//    	gui=new GUI();
+//    	gui.run();
         try {
-            Socket clientSocket = new Socket("127.0.0.1", SERVER_PORT); //loop address
+        	SERVER_PORT=Integer.parseInt(args[1]);
+            Socket clientSocket = new Socket(args[0], SERVER_PORT); //loop address
+
+        	Runtime.getRuntime().addShutdownHook(new Thread()
+            {
+            	@Override public void run() {
+            		try { clientSocket.close(); }
+            		catch (IOException e) { e.printStackTrace(); }
+            	}
+            });
+        	
+        	
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             try {
@@ -39,7 +59,19 @@ public class Client {
 //                sender.start();
                 Thread receiver = new ReceiverThread();
                 receiver.start();
-                Thread messageGetterThread = new Thread(new Runnable() {
+
+            	System.out.println("Pre");
+            	
+
+            	while(username.equals("")) {
+            		Thread.sleep(1); //TODO this is bad. The following code should be its own thread which is set to wait until notified. And then notified when username is set.
+            		continue;
+            	}
+            	for(JFrame j : loginWindows) { j.dispose(); }
+            	System.out.println("Past");
+            	gui=new GUI();
+            	gui.run();
+            	Thread messageGetterThread = new Thread(new Runnable() {
 					
 					@Override
 					public void run() {
@@ -60,16 +92,9 @@ public class Client {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(close) {
-            	clientSocket.close();
-            }
         } catch (IOException e){
             e.printStackTrace();
         }
-        
-        
-    
-
    }
 
     
@@ -78,7 +103,7 @@ public class Client {
 //    	System.out.println("Sending message: "+msg);
     	out.println("SENDMESSAGE");
     	out.println(roomID);
-        out.println(msg);
+        out.println(username+":"+msg);
         out.println("END");
         out.flush();
     }
@@ -90,17 +115,25 @@ public class Client {
         out.flush();
     }
 
-    public void changeRoom(int roomID) {
+    static public void changeRoom(int roomID) {
     	Client.roomID = roomID;
     	getMessages();
     }
 
-    public String[] getChatRooms(){
-    	//do we want this to display all the rooms
-        return null;
+
+    public static void getChatRooms(){
+
+    	System.out.println("Getting Chatrooms");
+    	out.println("LISTROOMS");
+        out.println("END");
+        out.flush();
+
     }
     
-    public boolean createAccount(String username, String password) {
+
+    
+    public static void createAccount(String username, String password) {
+
     	
     	password = hashString(password);
     	
@@ -112,10 +145,11 @@ public class Client {
         out.flush();
         
         //TODO: return response from server
-        return true;
     }
     
-    public boolean deleteAccount(String username, String password) {
+
+    
+    public static void deleteAccount(String username, String password) {
     	
     	password = hashString(password);
     	
@@ -126,12 +160,11 @@ public class Client {
         out.println("END");
         out.flush();
         
-        //TODO: return response from server
-        return true;
-    	
     }
 
-    public boolean login(String username, String password) {
+
+    public static void login(String username, String password) {
+
     	
     	password = hashString(password);
     	
@@ -142,43 +175,36 @@ public class Client {
         out.println("END");
         out.flush();
         
-        //TODO: return response from server
-        return true;
     }
 
-    public boolean createChatRoom(int roomID, String password) {
+    public static void createChatRoom(String roomName, String password) {
+
     	
     	password = hashString(password);
     	
-    	System.out.println("Creating room: "+roomID);
+    	System.out.println("Creating room: "+roomName);
     	out.println("CREATEROOM");
-    	out.println(roomID);
+    	out.println(roomName);
         out.println(password);
         out.println("END");
         out.flush();
         
-        //TODO: return response from server
-        return true;
     }
     
-    public boolean deleteChatRoom(int roomID, String password) {
 
-    	password = hashString(password);
+    public static void deleteChatRoom(int roomID) {
     	
     	System.out.println("Deleting room: "+roomID);
     	out.println("DELETEROOM");
     	out.println(roomID);
-        out.println(password);
         out.println("END");
         out.flush();
-        
-        //TODO: return response from server
-    	return true;
     }
 
-    public boolean joinChatRoom(int roomID, String password) {
 
-    	password = hashString(password);
+    public static void joinChatRoom(int roomID, String password) {
+
+    	password = hashString(password==null?"":password);
     	
     	System.out.println("Joining Room: "+roomID);
     	out.println("JOINROOM");
@@ -186,24 +212,20 @@ public class Client {
         out.println(password);
         out.println("END");
         out.flush();
-        
-        //TODO: return response from server
-    	return true;
+
     }
 
-    public boolean leaveChatRoom(int roomID) {
+    static public void leaveChatRoom(int roomID) {
     	
     	System.out.println("Leaving Room: "+roomID);
-    	out.println("CREATEROOM");
+    	out.println("LEAVEROOM");
     	out.println(roomID);
         out.println("END");
         out.flush();
-        
-        //TODO: return response from server
-        return true;
     }
     
     private static String hashString(String password) {
+    	if(password==null||password.trim().equals("")) { return ""; }
     	MessageDigest md;
     	try
         {
@@ -211,9 +233,9 @@ public class Client {
             md = MessageDigest.getInstance("SHA-256");
 
             // Generate the random salt
-            SecureRandom random = new SecureRandom();
+//            SecureRandom random = new SecureRandom();
             byte[] salt = new byte[16];
-            random.nextBytes(salt);
+            //random.nextBytes(salt);
             // Passing the salt to the digest for the computation
             md.update(salt);
             // Generate the salted hash
